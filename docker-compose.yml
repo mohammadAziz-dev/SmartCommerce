@@ -1,0 +1,15 @@
+services:
+  postgres:
+    image: postgres:18
+    container_name: smartcommerce-postgres
+    environment:
+      POSTGRES_DB: smartcommerce
+      POSTGRES_USER: smartcommerce
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5432:5432"
+    volumes:
+      - smartcommerce-postgres-data:/var/lib/postgresql
+
+volumes:
+  smartcommerce-postgres-data:
