@@ -5,6 +5,7 @@ import dev.mohammadaziz.smartcommerce.backend.business.BusinessNotFoundException
 import dev.mohammadaziz.smartcommerce.backend.business.BusinessRepository;
 import dev.mohammadaziz.smartcommerce.backend.product.dto.CreateProductRequest;
 import dev.mohammadaziz.smartcommerce.backend.product.dto.ProductResponse;
+import dev.mohammadaziz.smartcommerce.backend.product.dto.UpdateProductRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,9 +25,9 @@ public class ProductService {
         this.businessRepository = businessRepository;
     }
 
-    public ProductResponse createProduct(CreateProductRequest request) {
-        Business business = businessRepository.findById(request.businessId())
-                .orElseThrow(() -> new BusinessNotFoundException(request.businessId()));
+    public ProductResponse createProduct(UUID businessId, CreateProductRequest request) {
+        Business business = businessRepository.findById(businessId)
+                .orElseThrow(() -> new BusinessNotFoundException(businessId));
 
         Product product = new Product(
                 business,
@@ -61,5 +62,48 @@ public class ProductService {
                 product.getCategory(),
                 product.isActive()
         );
+    }
+
+    public ProductResponse getProductById(UUID businessId, UUID productId) {
+        Product product = productRepository
+                .findByIdAndBusinessId(productId, businessId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        return toResponse(product);
+    }
+
+    public ProductResponse updateProduct(
+            UUID businessId,
+            UUID productId,
+            UpdateProductRequest request
+    ) {
+        Product product = productRepository
+                .findByIdAndBusinessId(productId, businessId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        product.update(
+                request.name(),
+                request.description(),
+                request.sku(),
+                request.sellingPrice(),
+                request.category(),
+                request.active()
+        );
+
+        Product savedProduct = productRepository.save(product);
+
+        return toResponse(savedProduct);
+    }
+
+    public ProductResponse deactivateProduct(UUID businessId, UUID productId) {
+        Product product = productRepository
+                .findByIdAndBusinessId(productId, businessId)
+                .orElseThrow(() -> new ProductNotFoundException(productId));
+
+        product.deactivate();
+
+        Product savedProduct = productRepository.save(product);
+
+        return toResponse(savedProduct);
     }
 }
