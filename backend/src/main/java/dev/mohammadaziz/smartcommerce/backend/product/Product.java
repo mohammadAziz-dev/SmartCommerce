@@ -50,4 +50,24 @@ public class Product {
         this.category = category;
         this.active = active;
     }
+
+    public void update(
+            String name,
+            String description,
+            String sku,
+            BigDecimal sellingPrice,
+            String category,
+            boolean active
+    ) {
+        this.name = name;
+        this.description = description;
+        this.sku = sku;
+        this.sellingPrice = sellingPrice;
+        this.category = category;
+        this.active = active;
+    }
+
+    public void deactivate() {
+        this.active = false;
+    }
 }
