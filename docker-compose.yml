@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: smartcommerce
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     ports:
-      - "5432:5432"
+      - "55432:5432"
     volumes:
       - smartcommerce-postgres-data:/var/lib/postgresql
 
