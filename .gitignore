@@ -32,6 +32,18 @@ dist-ssr/
 coverage/
 *.local
 
+# Angular
+.angular/
+tmp/
+out-tsc/
+bazel-out/
+.sass-cache/
+connect.lock
+libpeerconnection.log
+testem.log
+typings/
+__screenshots__/
+
 # Visual Studio and other editor files
 *.suo
 *.ntvs*
