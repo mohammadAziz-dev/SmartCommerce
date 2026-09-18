@@ -1,0 +1,47 @@
+name: Angular Admin CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build, Test and Analyze
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: frontend/angular-app
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/angular-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests with coverage
+        run: npm test -- --watch=false --coverage
+
+      - name: Build Angular Admin
+        run: npm run build
+
+      - name: SonarQube Cloud Scan
+        uses: SonarSource/sonarqube-scan-action@v8
+        with:
+          projectBaseDir: frontend/angular-app
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
