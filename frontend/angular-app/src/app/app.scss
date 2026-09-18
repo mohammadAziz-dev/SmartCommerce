@@ -1,0 +1,55 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.admin-layout {
+  min-height: 100vh;
+}
+
+.admin-header {
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #ddd;
+
+  h1 {
+    margin: 0;
+    font-size: 1.5rem;
+  }
+}
+
+.admin-content {
+  display: flex;
+  min-height: calc(100vh - 65px);
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  width: 220px;
+  padding: 1.5rem;
+  border-right: 1px solid #ddd;
+
+  a,
+  span {
+    padding: 0.5rem;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a.active {
+    font-weight: 600;
+  }
+
+  span {
+    opacity: 0.6;
+  }
+}
+
+.admin-main {
+  flex: 1;
+  padding: 2rem;
+}

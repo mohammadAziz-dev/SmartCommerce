@@ -1,0 +1,26 @@
+<div class="admin-layout">
+  <header class="admin-header">
+    <h1>SmartCommerce Admin</h1>
+  </header>
+
+  <div class="admin-content">
+    <nav class="admin-nav" aria-label="Admin navigation">
+      <a
+        routerLink="/dashboard"
+        routerLinkActive="active"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
+        Dashboard
+      </a>
+
+      <span>Products</span>
+      <span>Inventory</span>
+      <span>Suppliers</span>
+      <span>Orders</span>
+    </nav>
+
+    <main class="admin-main">
+      <router-outlet />
+    </main>
+  </div>
+</div>
