@@ -9,6 +9,10 @@
 }
 
 .dialog {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+
   width: min(100%, 420px);
   padding: 1.5rem;
   border-radius: 0.75rem;
