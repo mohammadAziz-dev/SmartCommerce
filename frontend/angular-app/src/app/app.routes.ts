@@ -11,4 +11,11 @@ export const routes: Routes = [
     path: 'dashboard',
     component: Dashboard,
   },
+  {
+    path: 'products',
+    loadComponent: () =>
+      import('./features/products/pages/product-management/product-management').then(
+        (m) => m.ProductManagement,
+      ),
+  },
 ];

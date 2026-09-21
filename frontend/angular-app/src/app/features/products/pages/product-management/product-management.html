@@ -1,0 +1,420 @@
+<section class="product-management">
+  <header class="page-header">
+    <div>
+      <p class="page-eyebrow">SmartCommerce Admin</p>
+      <h1>Product Management</h1>
+      <p class="page-description">
+        Manage products and inventory for the selected business.
+      </p>
+    </div>
+  </header>
+
+  <!-- Product form -->
+  <section #productFormSection class="panel product-form-section">
+    <div class="section-header">
+      <div>
+        <h2>{{ isEditing() ? 'Edit Product' : 'Add Product' }}</h2>
+        <p>
+          {{
+            isEditing()
+              ? 'Update the selected product information.'
+              : 'Create a new product for this business.'
+          }}
+        </p>
+      </div>
+    </div>
+
+    <form
+      class="product-form"
+      [formGroup]="productForm"
+      (ngSubmit)="submitProduct()"
+    >
+      <div class="form-field">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          formControlName="name"
+          placeholder="e.g. Wireless Mouse"
+        />
+
+        @if (
+          productForm.controls.name.touched &&
+          productForm.controls.name.hasError('required')
+          ) {
+          <p class="field-error">Product name is required.</p>
+        }
+      </div>
+
+      <div class="form-field form-field-wide">
+        <label for="description">Description</label>
+        <textarea
+          id="description"
+          formControlName="description"
+          placeholder="Short product description"
+          rows="3"
+        ></textarea>
+      </div>
+
+      <div class="form-field">
+        <label for="sku">SKU</label>
+        <input
+          id="sku"
+          type="text"
+          formControlName="sku"
+          placeholder="e.g. WM-001"
+        />
+      </div>
+
+      <div class="form-field">
+        <label for="sellingPrice">Selling price</label>
+        <input
+          id="sellingPrice"
+          type="number"
+          min="0"
+          step="0.01"
+          formControlName="sellingPrice"
+        />
+
+        @if (
+          productForm.controls.sellingPrice.touched &&
+          productForm.controls.sellingPrice.invalid
+          ) {
+          <p class="field-error">
+            Selling price must be 0 or greater.
+          </p>
+        }
+      </div>
+
+      <div class="form-field">
+        <label for="category">Category</label>
+        <input
+          id="category"
+          type="text"
+          formControlName="category"
+          placeholder="e.g. Accessories"
+        />
+      </div>
+
+      <div class="form-field checkbox-field">
+        <label>
+          <input type="checkbox" formControlName="active" />
+          <span>Active product</span>
+        </label>
+      </div>
+
+      <div class="form-actions form-field-wide">
+        <button
+          class="btn btn-primary"
+          type="submit"
+          [disabled]="saving()"
+        >
+          @if (saving()) {
+            Saving...
+          } @else if (isEditing()) {
+            Save Changes
+          } @else {
+            Add Product
+          }
+        </button>
+
+        @if (isEditing()) {
+          <button
+            class="btn btn-secondary"
+            type="button"
+            (click)="cancelEdit()"
+            [disabled]="saving()"
+          >
+            Cancel
+          </button>
+        }
+      </div>
+    </form>
+  </section>
+
+  @if (productActionError()) {
+    <div class="state-message state-error">
+      <p>{{ productActionError() }}</p>
+    </div>
+  }
+
+  <!-- Products -->
+  <section class="products-section">
+    <div class="section-header">
+      <div>
+        <h2>Products</h2>
+        <p>View and manage the products for this business.</p>
+      </div>
+
+      @if (!loading() && !productLoadError()) {
+        <span class="count-badge">
+          {{ products().length }}
+          {{ products().length === 1 ? 'product' : 'products' }}
+        </span>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="state-message">
+        <p>Loading products...</p>
+      </div>
+    } @else if (productLoadError()) {
+      <div class="state-message state-error">
+        <p>{{ productLoadError() }}</p>
+      </div>
+    } @else if (products().length === 0) {
+      <div class="state-message">
+        <h3>No products yet</h3>
+        <p>Add your first product using the form above.</p>
+      </div>
+    } @else {
+      <div class="product-list">
+        @for (product of products(); track product.id) {
+          <article
+            class="product-card"
+            [class.product-card-inactive]="!product.active"
+          >
+            <div class="product-card-header">
+              <div>
+                <h3>{{ product.name }}</h3>
+
+                @if (product.category) {
+                  <p class="product-category">
+                    {{ product.category }}
+                  </p>
+                }
+              </div>
+
+              <span
+                class="status-badge"
+                [class.status-active]="product.active"
+                [class.status-inactive]="!product.active"
+              >
+                {{ product.active ? 'Active' : 'Inactive' }}
+              </span>
+            </div>
+
+            <p class="product-description">
+              {{ product.description || 'No description provided.' }}
+            </p>
+
+            <dl class="product-details">
+              <div>
+                <dt>SKU</dt>
+                <dd>{{ product.sku || '—' }}</dd>
+              </div>
+
+              <div>
+                <dt>Price</dt>
+                <dd>{{ product.sellingPrice }}</dd>
+              </div>
+            </dl>
+
+            <div class="product-actions">
+              <button
+                class="btn btn-secondary"
+                type="button"
+                (click)="editProduct(product)"
+              >
+                Edit
+              </button>
+
+              @if (product.active) {
+                <button
+                  class="btn btn-danger"
+                  type="button"
+                  (click)="requestProductDeactivation(product)"
+                >
+                  Deactivate
+                </button>
+              }
+
+              <button
+                class="btn btn-primary"
+                type="button"
+                (click)="selectProduct(product.id)"
+              >
+                Manage Inventory
+              </button>
+            </div>
+          </article>
+        }
+      </div>
+    }
+  </section>
+
+  <!-- Inventory -->
+  @if (selectedProduct(); as product) {
+    <section #inventorySection class="panel inventory-management">
+      <div class="section-header inventory-header">
+        <div>
+          <p class="section-eyebrow">Inventory</p>
+          <h2>{{ product.name }}</h2>
+          <p>Monitor and adjust the stock for this product.</p>
+        </div>
+      </div>
+
+      @if (inventoryLoading()) {
+        <div class="state-message">
+          <p>Loading inventory...</p>
+        </div>
+      } @else if (inventory(); as currentInventory) {
+        <div class="inventory-summary">
+          <div class="inventory-stat">
+            <span class="stat-label">Quantity</span>
+            <strong>{{ currentInventory.quantity }}</strong>
+          </div>
+
+          <div class="inventory-stat">
+            <span class="stat-label">Low-stock threshold</span>
+            <strong>{{ currentInventory.lowStockThreshold }}</strong>
+          </div>
+
+          <div class="inventory-stat">
+            <span class="stat-label">Stock status</span>
+
+            <span
+              class="status-badge"
+              [class.status-stock-ok]="!currentInventory.lowStock"
+              [class.status-low-stock]="currentInventory.lowStock"
+            >
+              {{
+                currentInventory.lowStock
+                  ? 'Low Stock'
+                  : 'In Stock'
+              }}
+            </span>
+          </div>
+        </div>
+
+        <div class="stock-adjustment">
+          <h3>Adjust Stock</h3>
+
+          <form
+            class="stock-form"
+            [formGroup]="stockAdjustmentForm"
+            (ngSubmit)="increaseStock()"
+          >
+            <div class="form-field">
+              <label for="stockAmount">Amount</label>
+
+              <input
+                id="stockAmount"
+                type="number"
+                min="1"
+                formControlName="amount"
+              />
+            </div>
+
+            <div class="form-actions">
+              <button
+                class="btn btn-success"
+                type="submit"
+                [disabled]="adjustingStock()"
+              >
+                Increase Stock
+              </button>
+
+              <button
+                class="btn btn-danger"
+                type="button"
+                (click)="requestStockDecrease()"
+                [disabled]="adjustingStock()"
+              >
+                Decrease Stock
+              </button>
+            </div>
+          </form>
+
+          @if (inventoryError()) {
+            <div class="inline-error">
+              {{ inventoryError() }}
+            </div>
+          }
+        </div>
+      } @else if (inventoryNotFound()) {
+        <div class="inventory-empty">
+          <div class="state-message">
+            <h3>No inventory yet</h3>
+            <p>{{ inventoryError() }}</p>
+          </div>
+
+          <div class="create-inventory">
+            <h3>Create Inventory</h3>
+            <p>
+              Set the initial quantity and low-stock threshold.
+            </p>
+
+            <form
+              class="inventory-form"
+              [formGroup]="inventoryForm"
+              (ngSubmit)="createInventory()"
+            >
+              <div class="form-field">
+                <label for="quantity">Initial quantity</label>
+
+                <input
+                  id="quantity"
+                  type="number"
+                  min="0"
+                  formControlName="quantity"
+                />
+              </div>
+
+              <div class="form-field">
+                <label for="lowStockThreshold">
+                  Low-stock threshold
+                </label>
+
+                <input
+                  id="lowStockThreshold"
+                  type="number"
+                  min="0"
+                  formControlName="lowStockThreshold"
+                />
+              </div>
+
+              <div class="form-actions">
+                <button
+                  class="btn btn-primary"
+                  type="submit"
+                  [disabled]="inventorySaving()"
+                >
+                  @if (inventorySaving()) {
+                    Creating...
+                  } @else {
+                    Create Inventory
+                  }
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      } @else if (inventoryError()) {
+        <div class="state-message state-error">
+          <p>{{ inventoryError() }}</p>
+        </div>
+      }
+    </section>
+  }
+
+  @if (productPendingDeactivation(); as product) {
+    <app-confirmation-dialog
+      title="Deactivate product?"
+      [message]="'Are you sure you want to deactivate ' + product.name + '?'"
+      confirmText="Deactivate"
+      (confirmed)="confirmProductDeactivation()"
+      (cancelled)="cancelProductDeactivation()"
+    />
+  }
+
+  @if (pendingStockDecrease(); as amount) {
+    <app-confirmation-dialog
+      title="Decrease stock?"
+      [message]="'Are you sure you want to decrease the stock by ' + amount + '?'"
+      confirmText="Decrease"
+      (confirmed)="confirmStockDecrease()"
+      (cancelled)="cancelStockDecrease()"
+    />
+  }
+</section>
