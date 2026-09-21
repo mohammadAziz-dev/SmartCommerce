@@ -1,0 +1,25 @@
+.product-card {
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.75rem;
+    background: white;
+}
+
+.product-card__category {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.product-card__title {
+    margin: 0.5rem 0;
+}
+
+.product-card__description {
+    color: #444;
+}
+
+.product-card__price {
+    margin-bottom: 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
