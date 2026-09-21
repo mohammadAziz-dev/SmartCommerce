@@ -383,5 +383,144 @@ describe('ProductManagement', () => {
     expect(component.inventoryError()).toBe(
       'Not enough stock available.',
     );
+  })
+
+  it('should not submit an invalid product form', () => {
+    component.productForm.patchValue({
+      name: '',
+      sellingPrice: -1,
+    });
+
+    component.submitProduct();
+
+    expect(productApiMock.createProduct).not.toHaveBeenCalled();
+    expect(productApiMock.updateProduct).not.toHaveBeenCalled();
+  });
+
+  it('should show an error when creating a product fails', () => {
+    component.productForm.setValue({
+      name: 'USB-C Hub',
+      description: null,
+      sku: null,
+      sellingPrice: 49.99,
+      category: null,
+      active: true,
+    });
+
+    productApiMock.createProduct.mockReturnValue(
+      throwError(() => new Error('API error')),
+    );
+
+    component.submitProduct();
+
+    expect(component.productActionError()).toBe('Could not create product.');
+  });
+
+  it('should show an error when loading products fails', () => {
+    productApiMock.getProducts.mockReturnValue(
+      throwError(() => new Error('API error')),
+    );
+
+    component.loadProducts('business-123');
+
+    expect(component.productLoadError()).toBe('Could not load products.');
+  });
+
+  it('should show an error when loading inventory fails', () => {
+    inventoryApiMock.getInventory.mockReturnValue(
+      throwError(() => ({ status: 500 })),
+    );
+
+    component.selectProduct('product-123');
+
+    expect(component.inventoryError()).toBe(
+      'Could not load inventory. Please try again.',
+    );
+  });
+
+  it('should request and cancel product deactivation', () => {
+    const product = {
+      id: 'product-123',
+      businessId: 'business-123',
+      name: 'USB-C Hub',
+      description: null,
+      sku: null,
+      sellingPrice: 49.99,
+      category: null,
+      active: true,
+    };
+
+    component.requestProductDeactivation(product);
+
+    expect(component.productPendingDeactivation()).toEqual(product);
+
+    component.cancelProductDeactivation();
+
+    expect(component.productPendingDeactivation()).toBeNull();
+  });
+
+  it('should confirm product deactivation', () => {
+    const product = {
+      id: 'product-123',
+      businessId: 'business-123',
+      name: 'USB-C Hub',
+      description: null,
+      sku: null,
+      sellingPrice: 49.99,
+      category: null,
+      active: true,
+    };
+
+    const deactivatedProduct = {
+      ...product,
+      active: false,
+    };
+
+    component.products.set([product]);
+    component.productPendingDeactivation.set(product);
+
+    productApiMock.deactivateProduct.mockReturnValue(
+      of(deactivatedProduct),
+    );
+
+    component.confirmProductDeactivation();
+
+    expect(component.productPendingDeactivation()).toBeNull();
+    expect(productApiMock.deactivateProduct).toHaveBeenCalledWith(
+      'business-123',
+      'product-123',
+    );
+  });
+
+  it('should request and cancel stock decrease confirmation', () => {
+    component.stockAdjustmentForm.setValue({
+      amount: 5,
+    });
+
+    component.requestStockDecrease();
+
+    expect(component.pendingStockDecrease()).toBe(5);
+
+    component.cancelStockDecrease();
+
+    expect(component.pendingStockDecrease()).toBeNull();
+  });
+
+  it('should show an error when increasing stock fails', () => {
+    component.selectedProductId.set('product-123');
+
+    component.stockAdjustmentForm.setValue({
+      amount: 5,
+    });
+
+    inventoryApiMock.increaseStock.mockReturnValue(
+      throwError(() => ({ status: 500 })),
+    );
+
+    component.increaseStock();
+
+    expect(component.inventoryError()).toBe(
+      'Could not increase stock. Please try again.',
+    );
   });
 });
