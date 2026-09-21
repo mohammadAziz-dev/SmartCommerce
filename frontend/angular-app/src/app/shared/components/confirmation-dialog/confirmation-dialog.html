@@ -1,0 +1,33 @@
+<div class="dialog-backdrop" (click)="cancelled.emit()">
+  <section
+    class="dialog"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-labelledby]="'confirmation-dialog-title'"
+    (click)="$event.stopPropagation()"
+  >
+    <h2 id="confirmation-dialog-title">
+      {{ title() }}
+    </h2>
+
+    <p>{{ message() }}</p>
+
+    <div class="dialog-actions">
+      <button
+        class="btn btn-secondary"
+        type="button"
+        (click)="cancelled.emit()"
+      >
+        {{ cancelText() }}
+      </button>
+
+      <button
+        class="btn btn-danger"
+        type="button"
+        (click)="confirmed.emit()"
+      >
+        {{ confirmText() }}
+      </button>
+    </div>
+  </section>
+</div>

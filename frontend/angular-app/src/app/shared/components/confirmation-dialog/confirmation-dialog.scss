@@ -1,0 +1,64 @@
+.dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgb(17 24 39 / 0.45);
+}
+
+.dialog {
+  width: min(100%, 420px);
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  background: #ffffff;
+  box-shadow: 0 20px 40px rgb(0 0 0 / 0.18);
+
+  h2 {
+    margin: 0 0 0.75rem;
+  }
+
+  p {
+    margin: 0;
+    color: #6b7280;
+    line-height: 1.5;
+  }
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.btn {
+  padding: 0.65rem 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  border-color: #d1d5db;
+  background: #ffffff;
+  color: #374151;
+}
+
+.btn-danger {
+  background: #b91c1c;
+  color: #ffffff;
+}
+
+@media (max-width: 480px) {
+  .dialog-actions {
+    flex-direction: column-reverse;
+  }
+
+  .btn {
+    width: 100%;
+  }
+}
