@@ -2,7 +2,7 @@ import type { Product } from "../models/Product";
 import "./ProductCard.css";
 
 interface ProductCardProps {
-    product: Product;
+    readonly product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
