@@ -60,37 +60,31 @@ class OrderTest {
 
     @Test
     void shouldRejectZeroQuantity() {
+        BigDecimal unitPrice = new BigDecimal("29.99");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> order.addItem(
-                        product,
-                        0,
-                        new BigDecimal("29.99")
-                )
+                () -> order.addItem(product, 0, unitPrice)
         );
     }
 
     @Test
     void shouldRejectNegativeQuantity() {
+        BigDecimal unitPrice = new BigDecimal("29.99");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> order.addItem(
-                        product,
-                        -1,
-                        new BigDecimal("29.99")
-                )
+                () -> order.addItem(product, -1, unitPrice)
         );
     }
 
     @Test
     void shouldRejectNegativeUnitPrice() {
+        BigDecimal negativeUnitPrice = new BigDecimal("-1.00");
+
         assertThrows(
                 IllegalArgumentException.class,
-                () -> order.addItem(
-                        product,
-                        1,
-                        new BigDecimal("-1.00")
-                )
+                () -> order.addItem(product, 1, negativeUnitPrice)
         );
     }
 }
