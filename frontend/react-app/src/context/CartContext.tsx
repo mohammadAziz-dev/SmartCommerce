@@ -1,80 +1,93 @@
-import { useState } from "react";
-import type { ReactNode } from "react";
-import type { CartItem } from "../models/CartItem";
-import type { Product } from "../models/Product";
-import { CartContext } from "./cart-context";
+import {useCallback, useMemo, useState} from "react";
+import type {ReactNode} from "react";
+import type {CartItem} from "../models/CartItem";
+import type {Product} from "../models/Product";
+import {CartContext} from "./cart-context";
 
 interface CartProviderProps {
-  children: ReactNode;
+    readonly children: ReactNode;
 }
 
-export function CartProvider({ children }: CartProviderProps) {
-  const [items, setItems] = useState<CartItem[]>([]);
+export function CartProvider({children}: CartProviderProps) {
+    const [items, setItems] = useState<CartItem[]>([]);
 
-  const addItem = (product: Product) => {
-    if (!product.active) {
-      return;
-    }
+    const addItem = useCallback((product: Product) => {
+        if (!product.active) {
+            return;
+        }
 
-    setItems((currentItems) => {
-      const existingItem = currentItems.find(
-        (item) => item.product.id === product.id,
-      );
+        setItems((currentItems) => {
+            const productExists = currentItems.some(
+                (item) => item.product.id === product.id,
+            );
 
-      if (existingItem) {
-        return currentItems.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item,
+            if (productExists) {
+                return currentItems.map((item) =>
+                    item.product.id === product.id
+                        ? {...item, quantity: item.quantity + 1}
+                        : item,
+                );
+            }
+
+            return [...currentItems, {product, quantity: 1}];
+        });
+    }, []);
+
+    const removeItem = useCallback((productId: string) => {
+        setItems((currentItems) =>
+            currentItems.filter((item) => item.product.id !== productId),
         );
-      }
+    }, []);
 
-      return [...currentItems, { product, quantity: 1 }];
-    });
-  };
+    const updateQuantity = useCallback(
+        (productId: string, quantity: number) => {
+            if (!Number.isInteger(quantity)) {
+                return;
+            }
 
-  const removeItem = (productId: string) => {
-    setItems((currentItems) =>
-      currentItems.filter((item) => item.product.id !== productId),
+            if (quantity <= 0) {
+                removeItem(productId);
+                return;
+            }
+
+            setItems((currentItems) =>
+                currentItems.map((item) =>
+                    item.product.id === productId ? {...item, quantity} : item,
+                ),
+            );
+        },
+        [removeItem],
     );
-  };
 
-  const updateQuantity = (productId: string, quantity: number) => {
-    if (!Number.isInteger(quantity)) {
-      return;
-    }
+    const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
 
-    if (quantity <= 0) {
-      removeItem(productId);
-      return;
-    }
-
-    setItems((currentItems) =>
-      currentItems.map((item) =>
-        item.product.id === productId ? { ...item, quantity } : item,
-      ),
+    const totalPrice = items.reduce(
+        (total, item) => total + item.product.sellingPrice * item.quantity,
+        0,
     );
-  };
 
-  const totalQuantity = items.reduce((total, item) => total + item.quantity, 0);
+    const contextValue = useMemo(
+        () => ({
+            items,
+            addItem,
+            removeItem,
+            updateQuantity,
+            totalQuantity,
+            totalPrice,
+        }),
+        [
+            items,
+            addItem,
+            removeItem,
+            updateQuantity,
+            totalQuantity,
+            totalPrice,
+        ],
+    );
 
-  const totalPrice = items.reduce(
-    (total, item) => total + item.product.sellingPrice * item.quantity,
-    0,
-  );
-
-  return (
-    <CartContext.Provider
-      value={{
-        items,
-        addItem,
-        removeItem,
-        updateQuantity,
-        totalQuantity,
-        totalPrice,
-      }}
-    >
-      {children}
-    </CartContext.Provider>
-  );
+    return (
+        <CartContext.Provider value={contextValue}>
+            {children}
+        </CartContext.Provider>
+    );
 }
