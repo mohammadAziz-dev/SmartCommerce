@@ -1,24 +1,29 @@
 import type { Product } from "../models/Product";
 import "./ProductCard.css";
+import { useCart } from "../hooks/useCart";
 
 interface ProductCardProps {
-    readonly product: Product;
+  readonly product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    return (
-        <article className="product-card">
-            <span className="product-card__category">{product.category}</span>
+  const { addItem } = useCart();
 
-            <h2 className="product-card__title">{product.name}</h2>
+  return (
+    <article className="product-card">
+      <button type="button" onClick={() => addItem(product)}>
+        Add to cart
+      </button>
 
-            {product.description && (
-                <p className="product-card__description">{product.description}</p>
-            )}
+      <span className="product-card__category">{product.category}</span>
 
-            <p className="product-card__price">
-                €{product.sellingPrice.toFixed(2)}
-            </p>
-        </article>
-    );
+      <h2 className="product-card__title">{product.name}</h2>
+
+      {product.description && (
+        <p className="product-card__description">{product.description}</p>
+      )}
+
+      <p className="product-card__price">€{product.sellingPrice.toFixed(2)}</p>
+    </article>
+  );
 }
