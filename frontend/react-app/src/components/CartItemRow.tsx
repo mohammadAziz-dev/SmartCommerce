@@ -3,7 +3,7 @@ import { useCart } from "../hooks/useCart";
 import "./CartItemRow.css";
 
 interface CartItemRowProps {
-  item: CartItem;
+  readonly item: CartItem;
 }
 
 export function CartItemRow({ item }: CartItemRowProps) {
