@@ -8,6 +8,8 @@ function AppLayout() {
           <Link to="/">SmartCommerce</Link>
           {" | "}
           <Link to="/products">Products</Link>
+          {" | "}
+          <Link to="/cart">Cart</Link>
         </nav>
       </header>
 
