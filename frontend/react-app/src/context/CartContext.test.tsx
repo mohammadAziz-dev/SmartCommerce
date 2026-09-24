@@ -28,6 +28,7 @@ function TestCart() {
     addItem,
     updateQuantity,
     removeItem,
+    clearCart,
     totalQuantity,
     totalPrice,
   } = useCart();
@@ -56,6 +57,10 @@ function TestCart() {
 
       <button type="button" onClick={() => removeItem(product.id)}>
         Remove product
+      </button>
+
+      <button type="button" onClick={clearCart}>
+        Clear cart
       </button>
 
       <span>Cart items: {items.length}</span>
@@ -131,6 +136,30 @@ describe("CartContext", () => {
     fireEvent.click(screen.getByRole("button", { name: "Remove product" }));
 
     expect(screen.getByText("Cart items: 0")).toBeInTheDocument();
+  });
+
+  it("clears all items from the cart", () => {
+    render(
+      <CartProvider>
+        <TestCart />
+      </CartProvider>,
+    );
+
+    const addButton = screen.getByRole("button", {
+      name: "Add product",
+    });
+
+    fireEvent.click(addButton);
+    fireEvent.click(addButton);
+
+    expect(screen.getByText("Cart items: 1")).toBeInTheDocument();
+    expect(screen.getByText("Total quantity: 2")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Clear cart" }));
+
+    expect(screen.getByText("Cart items: 0")).toBeInTheDocument();
+    expect(screen.getByText("Total quantity: 0")).toBeInTheDocument();
+    expect(screen.getByText("Total price: 0.00")).toBeInTheDocument();
   });
 
   it("does not add an inactive product to the cart", () => {
