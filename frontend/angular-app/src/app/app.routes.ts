@@ -18,4 +18,16 @@ export const routes: Routes = [
         (m) => m.ProductManagement,
       ),
   },
+  {
+    path: 'orders',
+    loadComponent: () =>
+      import('./features/orders/pages/order-management/order-management').then(
+        (m) => m.OrderManagement,
+      ),
+  },
+  {
+    path: 'orders/:orderId',
+    loadComponent: () =>
+      import('./features/orders/pages/order-detail/order-detail').then((m) => m.OrderDetail),
+  },
 ];
