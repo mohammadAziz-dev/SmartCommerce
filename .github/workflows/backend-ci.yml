@@ -41,6 +41,13 @@ jobs:
           java-version: '25'
           cache: maven
 
+      - name: Create test database
+        env:
+          PGPASSWORD: smartcommerce-ci-password
+        run: |
+          psql -h localhost -U smartcommerce -d smartcommerce \
+            -c "CREATE DATABASE smartcommerce_test;"
+
       - name: Build, test and analyze
         working-directory: backend
         env:
