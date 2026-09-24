@@ -21,6 +21,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -326,5 +327,72 @@ class OrderServiceTest {
 
         verify(orderRepository, never())
                 .save(any(Order.class));
+    }
+
+    @Test
+    void shouldGetOrdersForBusiness() {
+        UUID businessId = UUID.randomUUID();
+
+        Business business = mock(Business.class);
+        when(business.getId()).thenReturn(businessId);
+
+        Order order = new Order(business);
+
+        when(orderRepository.findAllByBusinessId(businessId))
+                .thenReturn(List.of(order));
+
+        List<OrderResponse> responses = orderService.getOrders(businessId);
+
+        assertEquals(1, responses.size());
+        assertEquals(businessId, responses.getFirst().businessId());
+        assertEquals(OrderStatus.CREATED, responses.getFirst().status());
+
+        verify(orderRepository).findAllByBusinessId(businessId);
+    }
+
+    @Test
+    void shouldGetOrderForBusiness() {
+        UUID businessId = UUID.randomUUID();
+        UUID orderId = UUID.randomUUID();
+
+        Business business = mock(Business.class);
+        when(business.getId()).thenReturn(businessId);
+
+        Order order = mock(Order.class);
+        when(order.getId()).thenReturn(orderId);
+        when(order.getBusiness()).thenReturn(business);
+        when(order.getStatus()).thenReturn(OrderStatus.CREATED);
+        when(order.getCreatedAt()).thenReturn(Instant.parse("2026-09-24T12:00:00Z"));
+        when(order.getItems()).thenReturn(List.of());
+
+        when(orderRepository.findByIdAndBusinessId(orderId, businessId))
+                .thenReturn(Optional.of(order));
+
+        OrderResponse response = orderService.getOrder(businessId, orderId);
+
+        assertEquals(orderId, response.id());
+        assertEquals(businessId, response.businessId());
+        assertEquals(OrderStatus.CREATED, response.status());
+        assertEquals(BigDecimal.ZERO, response.totalPrice());
+        assertEquals(Instant.parse("2026-09-24T12:00:00Z"), response.createdAt());
+        assertTrue(response.items().isEmpty());
+
+        verify(orderRepository).findByIdAndBusinessId(orderId, businessId);
+    }
+
+    @Test
+    void shouldThrowWhenOrderDoesNotExistForBusiness() {
+        UUID businessId = UUID.randomUUID();
+        UUID orderId = UUID.randomUUID();
+
+        when(orderRepository.findByIdAndBusinessId(orderId, businessId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                OrderNotFoundException.class,
+                () -> orderService.getOrder(businessId, orderId)
+        );
+
+        verify(orderRepository).findByIdAndBusinessId(orderId, businessId);
     }
 }

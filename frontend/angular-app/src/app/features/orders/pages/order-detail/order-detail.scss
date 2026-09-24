@@ -1,0 +1,70 @@
+.order-detail {
+  padding: 2rem;
+
+  h1 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
+  > a {
+    display: inline-block;
+    margin-bottom: 2rem;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  > div {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+
+    p {
+      margin: 0 0 0.75rem;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #ddd;
+  }
+
+  th,
+  td {
+    padding: 0.9rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  th {
+    font-weight: 600;
+  }
+
+  tbody tr:hover {
+    background: #f7f7f7;
+  }
+}
+
+@media (max-width: 768px) {
+  .order-detail {
+    padding: 1rem;
+    overflow-x: auto;
+
+    table {
+      min-width: 600px;
+    }
+  }
+}

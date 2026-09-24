@@ -1,0 +1,60 @@
+<section class="order-management">
+  <header class="page-header">
+    <div>
+      <p class="page-eyebrow">SmartCommerce Admin</p>
+      <h1>Order Management</h1>
+      <p class="page-description">View customer orders for the selected business.</p>
+    </div>
+  </header>
+
+  @if (loading()) {
+    <div class="state-message">
+      <p>Loading orders...</p>
+    </div>
+  } @else if (loadError()) {
+    <div class="state-message state-error">
+      <p>{{ loadError() }}</p>
+    </div>
+  } @else if (orders().length === 0) {
+    <div class="state-message">
+      <h3>No orders yet</h3>
+      <p>Customer orders for this business will appear here.</p>
+    </div>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Order ID</th>
+          <th>Status</th>
+          <th>Total</th>
+          <th>Created</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (order of orders(); track order.id) {
+          <tr>
+            <td title="{{ order.id }}">{{ order.id.slice(0, 8) }}...</td>
+            <td>
+              <span
+                class="status-badge"
+                [class.status-created]="order.status === 'CREATED'"
+                [class.status-cancelled]="order.status === 'CANCELLED'"
+              >
+                {{ order.status }}
+              </span>
+            </td>
+            <td>{{ order.totalPrice | currency: 'EUR' }}</td>
+            <td>{{ order.createdAt | date: 'medium' }}</td>
+            <td>
+              <a [routerLink]="['/orders', order.id]" [queryParams]="{ businessId: businessId() }">
+                View Details
+              </a>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</section>

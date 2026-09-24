@@ -1,0 +1,45 @@
+<section class="order-detail">
+  <h1>Order Details</h1>
+  <a routerLink="/orders" [queryParams]="{ businessId: businessId() }"> Back to Orders </a>
+
+  @if (loading()) {
+    <p>Loading order...</p>
+  } @else if (loadError()) {
+    <p>{{ loadError() }}</p>
+  } @else if (order(); as order) {
+    <div>
+      <p><strong>Order ID:</strong> {{ order.id }}</p>
+      <p><strong>Status:</strong> {{ order.status }}</p>
+      <p><strong>Total:</strong> {{ order.totalPrice | currency: 'EUR' }}</p>
+      <p><strong>Created:</strong> {{ order.createdAt | date: 'medium' }}</p>
+    </div>
+
+    <h2>Order Items</h2>
+
+    @if (order.items.length === 0) {
+      <p>No items found.</p>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Unit Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          @for (item of order.items; track item.productId) {
+            <tr>
+              <td>{{ item.productName }}</td>
+              <td>{{ item.quantity }}</td>
+              <td>{{ item.unitPrice | currency: 'EUR' }}</td>
+              <td>{{ item.subtotal | currency: 'EUR' }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  }
+</section>
