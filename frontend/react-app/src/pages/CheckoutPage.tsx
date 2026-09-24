@@ -45,19 +45,16 @@ export function CheckoutPage() {
     return (
       <section>
         <h1>Order confirmed</h1>
-
         <p>Your order has been placed successfully.</p>
 
         <p>
           <strong>Order ID:</strong> {order.id}
         </p>
-
         <p>
           <strong>Status:</strong> {order.status}
         </p>
 
         <h2>Order summary</h2>
-
         <ul>
           {order.items.map((item) => (
             <li key={item.productId}>
@@ -69,7 +66,6 @@ export function CheckoutPage() {
         <p>
           <strong>Total: €{order.totalPrice.toFixed(2)}</strong>
         </p>
-
         <Link to="/products">Continue shopping</Link>
       </section>
     );
@@ -90,7 +86,6 @@ export function CheckoutPage() {
       <h1>Checkout</h1>
 
       <h2>Order summary</h2>
-
       <ul>
         {items.map((item) => (
           <li key={item.product.id}>
@@ -99,7 +94,6 @@ export function CheckoutPage() {
           </li>
         ))}
       </ul>
-
       <p>
         <strong>Estimated total: €{totalPrice.toFixed(2)}</strong>
       </p>
