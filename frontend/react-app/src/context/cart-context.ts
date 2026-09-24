@@ -9,6 +9,7 @@ export interface CartContextValue {
   updateQuantity: (productId: string, quantity: number) => void;
   totalQuantity: number;
   totalPrice: number;
+  clearCart: () => void;
 }
 
 export const CartContext = createContext<CartContextValue | undefined>(

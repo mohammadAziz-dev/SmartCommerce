@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, expect, it } from "vitest";
 import { CartProvider } from "../context/CartContext";
 import { CartPage } from "./CartPage";
@@ -39,10 +40,12 @@ describe("CartPage", () => {
 
   it("shows cart items and totals", () => {
     render(
-      <CartProvider>
-        <AddProductButton />
-        <CartPage />
-      </CartProvider>,
+      <MemoryRouter>
+        <CartProvider>
+          <AddProductButton />
+          <CartPage />
+        </CartProvider>
+      </MemoryRouter>,
     );
 
     fireEvent.click(screen.getByRole("button", { name: "Add product" }));

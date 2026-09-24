@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { CartItemRow } from "../components/CartItemRow";
 import { useCart } from "../hooks/useCart";
 import "./CartPage.css";
@@ -26,6 +27,7 @@ export function CartPage() {
       <section className="cart-summary">
         <p>Total items: {totalQuantity}</p>
         <p className="cart-total">Total: €{totalPrice.toFixed(2)}</p>
+        <Link to="/checkout">Proceed to checkout</Link>
       </section>
     </main>
   );
