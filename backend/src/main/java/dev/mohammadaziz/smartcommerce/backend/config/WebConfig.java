@@ -13,7 +13,8 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:5173",
                         "http://localhost:4200",
-                        "https://smartcommerce-shop.onrender.com"
+                        "https://smartcommerce-shop.onrender.com",
+                        "https://smartcommerce-admin-c1k4.onrender.com"
                 )
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
     }
