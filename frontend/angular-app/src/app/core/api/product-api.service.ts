@@ -1,24 +1,26 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
-import { Product, ProductRequest } from '../../models/product.model';
+import {Product, ProductRequest} from '../../models/product.model';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductApiService {
   private readonly http = inject(HttpClient);
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   getProducts(businessId: string): Observable<Product[]> {
     return this.http.get<Product[]>(
-      `/api/businesses/${businessId}/products`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/products`,
     );
   }
 
   getProduct(businessId: string, productId: string): Observable<Product> {
     return this.http.get<Product>(
-      `/api/businesses/${businessId}/products/${productId}`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/products/${productId}`,
     );
   }
 
@@ -27,7 +29,7 @@ export class ProductApiService {
     request: ProductRequest,
   ): Observable<Product> {
     return this.http.post<Product>(
-      `/api/businesses/${businessId}/products`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/products`,
       request,
     );
   }
@@ -38,7 +40,7 @@ export class ProductApiService {
     request: ProductRequest,
   ): Observable<Product> {
     return this.http.put<Product>(
-      `/api/businesses/${businessId}/products/${productId}`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/products/${productId}`,
       request,
     );
   }
@@ -48,7 +50,7 @@ export class ProductApiService {
     productId: string,
   ): Observable<Product> {
     return this.http.patch<Product>(
-      `/api/businesses/${businessId}/products/${productId}/deactivate`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/products/${productId}/deactivate`,
       {},
     );
   }
