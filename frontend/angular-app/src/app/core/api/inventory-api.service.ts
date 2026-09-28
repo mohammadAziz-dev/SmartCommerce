@@ -1,25 +1,27 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 import {
   CreateInventoryRequest,
   Inventory,
   StockAdjustmentRequest,
 } from '../../models/inventory.model';
+import {environment} from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class InventoryApiService {
   private readonly http = inject(HttpClient);
+  private readonly apiBaseUrl = environment.apiBaseUrl;
 
   createInventory(
     businessId: string,
     request: CreateInventoryRequest,
   ): Observable<Inventory> {
     return this.http.post<Inventory>(
-      `/api/businesses/${businessId}/inventory`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/inventory`,
       request,
     );
   }
@@ -29,7 +31,7 @@ export class InventoryApiService {
     productId: string,
   ): Observable<Inventory> {
     return this.http.get<Inventory>(
-      `/api/businesses/${businessId}/inventory/${productId}`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/inventory/${productId}`,
     );
   }
 
@@ -39,7 +41,7 @@ export class InventoryApiService {
     request: StockAdjustmentRequest,
   ): Observable<Inventory> {
     return this.http.patch<Inventory>(
-      `/api/businesses/${businessId}/inventory/${productId}/increase`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/inventory/${productId}/increase`,
       request,
     );
   }
@@ -50,7 +52,7 @@ export class InventoryApiService {
     request: StockAdjustmentRequest,
   ): Observable<Inventory> {
     return this.http.patch<Inventory>(
-      `/api/businesses/${businessId}/inventory/${productId}/decrease`,
+      `${this.apiBaseUrl}/api/businesses/${businessId}/inventory/${productId}/decrease`,
       request,
     );
   }
