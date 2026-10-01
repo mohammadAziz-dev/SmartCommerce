@@ -6,12 +6,18 @@ import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-import dev.mohammadaziz.smartcommerce.backend.user.AuthenticationService;
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
@@ -20,13 +26,16 @@ class AuthControllerTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private RegistrationService registrationService;
-
-    @MockitoBean
     private EmailVerificationService emailVerificationService;
 
+
+    @MockitoBean
+    private RegistrationService registrationService;
     @MockitoBean
     private AuthenticationService authenticationService;
+
+    @MockitoBean
+    private UserRepository userRepository;
 
     @Test
     void shouldRegisterUser() throws Exception {
@@ -170,5 +179,34 @@ class AuthControllerTest {
                                 }
                                 """))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturnAuthenticatedUser() throws Exception {
+        User user = new User(
+                UUID.randomUUID(),
+                "Mohammad Aziz",
+                "aziz@example.com",
+                "hashed-password",
+                true,
+                Instant.now()
+        );
+
+        when(userRepository.findByEmail("aziz@example.com"))
+                .thenReturn(Optional.of(user));
+
+        UsernamePasswordAuthenticationToken authentication =
+                UsernamePasswordAuthenticationToken.authenticated(
+                        "aziz@example.com",
+                        null,
+                        List.of()
+                );
+
+        mockMvc.perform(get("/api/auth/me")
+                        .principal(authentication))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Mohammad Aziz"))
+                .andExpect(jsonPath("$.email").value("aziz@example.com"))
+                .andExpect(jsonPath("$.emailVerified").value(true));
     }
 }
