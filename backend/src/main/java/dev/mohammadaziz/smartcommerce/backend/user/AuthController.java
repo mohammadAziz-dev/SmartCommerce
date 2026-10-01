@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -74,6 +75,14 @@ public class AuthController {
                 user.getName(),
                 user.getEmail(),
                 user.isEmailVerified()
+        );
+    }
+
+    @GetMapping("/csrf")
+    public CsrfTokenResponse csrf(CsrfToken csrfToken) {
+        return new CsrfTokenResponse(
+                csrfToken.getToken(),
+                csrfToken.getHeaderName()
         );
     }
 }

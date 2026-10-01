@@ -209,4 +209,5 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.email").value("aziz@example.com"))
                 .andExpect(jsonPath("$.emailVerified").value(true));
     }
+
 }
