@@ -17,21 +17,6 @@ public class ResendEmailService implements EmailService {
         this.resend = new Resend(apiKey);
     }
 
-//    public ResendEmailService(
-//            @Value("${resend.api-key}") String apiKey
-//    ) {
-//        System.out.println(
-//                "Resend API key loaded: "
-//                        + (!apiKey.isBlank())
-//                        + ", starts with re_: "
-//                        + apiKey.startsWith("re_")
-//                        + ", length: "
-//                        + apiKey.length()
-//        );
-//
-//        this.resend = new Resend(apiKey);
-//    }
-
     @Override
     public void sendEmailVerification(
             String recipientEmail,

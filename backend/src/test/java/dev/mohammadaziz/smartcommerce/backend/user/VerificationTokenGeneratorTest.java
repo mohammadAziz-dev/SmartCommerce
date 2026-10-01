@@ -15,8 +15,10 @@ class VerificationTokenGeneratorTest {
         String tokenHash = tokenGenerator.hashToken(rawToken);
 
         assertThat(rawToken).isNotBlank();
-        assertThat(tokenHash).isNotBlank();
-        assertThat(tokenHash).isNotEqualTo(rawToken);
+        assertThat(tokenHash)
+                .isNotBlank()
+                .isNotEqualTo(rawToken);
+
     }
 
     @Test
