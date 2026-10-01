@@ -11,6 +11,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import dev.mohammadaziz.smartcommerce.backend.user.AuthenticationService;
+
 @WebMvcTest(AuthController.class)
 class AuthControllerTest {
 
@@ -22,6 +24,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private EmailVerificationService emailVerificationService;
+
+    @MockitoBean
+    private AuthenticationService authenticationService;
 
     @Test
     void shouldRegisterUser() throws Exception {
@@ -152,5 +157,18 @@ class AuthControllerTest {
                                 }
                                 """))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void shouldLoginUser() throws Exception {
+        mockMvc.perform(post("/api/auth/login")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                                {
+                                  "email": "aziz@example.com",
+                                  "password": "TestPassword123!"
+                                }
+                                """))
+                .andExpect(status().isNoContent());
     }
 }
