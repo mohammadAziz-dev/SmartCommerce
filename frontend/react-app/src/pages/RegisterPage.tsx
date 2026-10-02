@@ -1,4 +1,4 @@
-import { useState, type FormEventHandler } from "react";
+import { useState, type SyntheticEvent } from "react";
 import { register } from "../api/authApi";
 
 export function RegisterPage() {
@@ -9,7 +9,7 @@ export function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
 
-  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
+  async function handleSubmit(event: SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (isSubmitting) {
@@ -27,7 +27,7 @@ export function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }
 
   if (registered) {
     return (
@@ -45,37 +45,38 @@ export function RegisterPage() {
     <section>
       <h1>Create account</h1>
 
-      <form onSubmit={handleSubmit}>
-        <label>
-          Name
-          <input
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            required
-          />
-        </label>
+      <form
+        onSubmit={(event) => {
+          void handleSubmit(event);
+        }}
+      >
+        <label htmlFor="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={(event) => setName(event.target.value)}
+          required
+        />
 
-        <label>
-          Email
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            required
-          />
-        </label>
+        <label htmlFor="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
 
-        <label>
-          Password
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            minLength={8}
-            required
-          />
-        </label>
+        <label htmlFor="password">Password</label>
+        <input
+          id="password"
+          type="password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          minLength={8}
+          required
+        />
 
         {error && <p role="alert">{error}</p>}
 
