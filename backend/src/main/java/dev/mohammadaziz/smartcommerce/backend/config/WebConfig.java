@@ -16,6 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://smartcommerce-shop.onrender.com",
                         "https://smartcommerce-admin-c1k4.onrender.com"
                 )
+                .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
     }
 }
