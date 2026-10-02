@@ -23,7 +23,7 @@ export function LoginPage() {
 
     try {
       await login({ email, password });
-      navigate("/products");
+      void navigate("/products");
     } catch {
       setError("Could not log in. Please check your email and password.");
     } finally {
