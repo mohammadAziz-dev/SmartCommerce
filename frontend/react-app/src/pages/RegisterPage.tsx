@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, type FormEventHandler } from "react";
 import { register } from "../api/authApi";
 
 export function RegisterPage() {
@@ -9,7 +9,7 @@ export function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const [registered, setRegistered] = useState(false);
 
-  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
 
     if (isSubmitting) {
@@ -27,7 +27,7 @@ export function RegisterPage() {
     } finally {
       setIsSubmitting(false);
     }
-  }
+  };
 
   if (registered) {
     return (

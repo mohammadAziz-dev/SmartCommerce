@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   getCurrentUser,
   login as loginRequest,
@@ -19,6 +19,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     getCurrentUser()
       .then(setUser)
+      .catch(() => setUser(null))
       .finally(() => setLoading(false));
   }, []);
 
@@ -34,9 +35,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setUser(null);
   }
 
-  return (
-    <AuthContext.Provider value={{ user, loading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  const value = useMemo(
+    () => ({ user, loading, login, logout }),
+    [user, loading],
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
