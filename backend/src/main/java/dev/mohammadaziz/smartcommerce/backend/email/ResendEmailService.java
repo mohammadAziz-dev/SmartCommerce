@@ -24,7 +24,7 @@ public class ResendEmailService implements EmailService {
             String verificationUrl
     ) {
         CreateEmailOptions params = CreateEmailOptions.builder()
-                .from("SmartCommerce <onboarding@resend.dev>")
+                .from("SmartCommerce <noreply@mohammadaziz.dev>")
                 .to(recipientEmail)
                 .subject("Verify your SmartCommerce email")
                 .html("""
