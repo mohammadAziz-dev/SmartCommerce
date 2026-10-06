@@ -1,8 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { InventoryApiService } from './inventory-api.service';
@@ -30,11 +27,7 @@ describe('InventoryApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        InventoryApiService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [InventoryApiService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(InventoryApiService);
@@ -52,15 +45,11 @@ describe('InventoryApiService', () => {
       lowStockThreshold: 5,
     };
 
-    service
-      .createInventory(businessId, requestBody)
-      .subscribe((result) => {
-        expect(result).toEqual(inventory);
-      });
+    service.createInventory(businessId, requestBody).subscribe((result) => {
+      expect(result).toEqual(inventory);
+    });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/inventory`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/inventory`);
 
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(requestBody);
@@ -69,15 +58,11 @@ describe('InventoryApiService', () => {
   });
 
   it('should load inventory for a product', () => {
-    service
-      .getInventory(businessId, productId)
-      .subscribe((result) => {
-        expect(result).toEqual(inventory);
-      });
+    service.getInventory(businessId, productId).subscribe((result) => {
+      expect(result).toEqual(inventory);
+    });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/inventory/${productId}`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/inventory/${productId}`);
 
     expect(request.request.method).toBe('GET');
 
@@ -94,11 +79,9 @@ describe('InventoryApiService', () => {
       quantity: 25,
     };
 
-    service
-      .increaseStock(businessId, productId, requestBody)
-      .subscribe((result) => {
-        expect(result).toEqual(updatedInventory);
-      });
+    service.increaseStock(businessId, productId, requestBody).subscribe((result) => {
+      expect(result).toEqual(updatedInventory);
+    });
 
     const request = httpTesting.expectOne(
       `/api/businesses/${businessId}/inventory/${productId}/increase`,
@@ -120,11 +103,9 @@ describe('InventoryApiService', () => {
       quantity: 15,
     };
 
-    service
-      .decreaseStock(businessId, productId, requestBody)
-      .subscribe((result) => {
-        expect(result).toEqual(updatedInventory);
-      });
+    service.decreaseStock(businessId, productId, requestBody).subscribe((result) => {
+      expect(result).toEqual(updatedInventory);
+    });
 
     const request = httpTesting.expectOne(
       `/api/businesses/${businessId}/inventory/${productId}/decrease`,
@@ -134,5 +115,48 @@ describe('InventoryApiService', () => {
     expect(request.request.body).toEqual(requestBody);
 
     request.flush(updatedInventory);
+  });
+
+  it('should receive inventory changes through SSE', () => {
+    let inventoryChangedListener: ((event: MessageEvent) => void) | undefined;
+
+    class MockEventSource {
+      constructor(
+        public url: string,
+        public eventSourceInitDict?: EventSourceInit,
+      ) {}
+
+      addEventListener(type: string, listener: EventListener): void {
+        if (type === 'inventory-changed') {
+          inventoryChangedListener = listener as (event: MessageEvent) => void;
+        }
+      }
+    }
+
+    vi.stubGlobal('EventSource', MockEventSource);
+
+    const onInventoryChanged = vi.fn();
+
+    const eventSource = service.subscribeToInventoryChanges(businessId, onInventoryChanged);
+
+    expect(eventSource).toBeDefined();
+
+    inventoryChangedListener?.(
+      new MessageEvent('inventory-changed', {
+        data: JSON.stringify({
+          businessId,
+          productId,
+          quantity: 15,
+        }),
+      }),
+    );
+
+    expect(onInventoryChanged).toHaveBeenCalledWith({
+      businessId,
+      productId,
+      quantity: 15,
+    });
+
+    vi.unstubAllGlobals();
   });
 });
