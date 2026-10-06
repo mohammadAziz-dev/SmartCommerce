@@ -3,6 +3,7 @@ package dev.mohammadaziz.smartcommerce.backend.inventory;
 import dev.mohammadaziz.smartcommerce.backend.business.Business;
 import dev.mohammadaziz.smartcommerce.backend.business.BusinessRepository;
 import dev.mohammadaziz.smartcommerce.backend.inventory.dto.CreateInventoryRequest;
+import dev.mohammadaziz.smartcommerce.backend.inventory.dto.InventoryChangedEvent;
 import dev.mohammadaziz.smartcommerce.backend.inventory.dto.InventoryResponse;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductNotFoundException;
@@ -21,6 +22,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import org.springframework.context.ApplicationEventPublisher;
+
 @ExtendWith(MockitoExtension.class)
 class InventoryServiceTest {
 
@@ -32,6 +35,9 @@ class InventoryServiceTest {
 
     @Mock
     private ProductRepository productRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private InventoryService inventoryService;
@@ -150,6 +156,13 @@ class InventoryServiceTest {
         assertEquals(15, response.quantity());
 
         verify(inventoryRepository).save(inventory);
+        verify(eventPublisher).publishEvent(
+                new InventoryChangedEvent(
+                        businessId,
+                        productId,
+                        15
+                )
+        );
     }
 
     @Test

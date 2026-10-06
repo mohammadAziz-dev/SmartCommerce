@@ -4,11 +4,13 @@ import dev.mohammadaziz.smartcommerce.backend.business.Business;
 import dev.mohammadaziz.smartcommerce.backend.business.BusinessNotFoundException;
 import dev.mohammadaziz.smartcommerce.backend.business.BusinessRepository;
 import dev.mohammadaziz.smartcommerce.backend.inventory.dto.CreateInventoryRequest;
+import dev.mohammadaziz.smartcommerce.backend.inventory.dto.InventoryChangedEvent;
 import dev.mohammadaziz.smartcommerce.backend.inventory.dto.InventoryResponse;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductNotFoundException;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.UUID;
 
@@ -18,15 +20,18 @@ public class InventoryService {
     private final InventoryRepository inventoryRepository;
     private final BusinessRepository businessRepository;
     private final ProductRepository productRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public InventoryService(
             InventoryRepository inventoryRepository,
             BusinessRepository businessRepository,
-            ProductRepository productRepository
+            ProductRepository productRepository,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.inventoryRepository = inventoryRepository;
         this.businessRepository = businessRepository;
         this.productRepository = productRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public InventoryResponse createInventory(
@@ -83,6 +88,14 @@ public class InventoryService {
         inventory.decreaseStock(amount);
 
         Inventory savedInventory = inventoryRepository.save(inventory);
+
+        eventPublisher.publishEvent(
+                new InventoryChangedEvent(
+                        businessId,
+                        productId,
+                        savedInventory.getQuantity()
+                )
+        );
 
         return toResponse(savedInventory);
     }
