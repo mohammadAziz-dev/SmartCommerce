@@ -22,10 +22,7 @@ import { ConfirmationDialog } from '../../../../shared/components/confirmation-d
 
 @Component({
   selector: 'app-product-management',
-  imports: [
-    ReactiveFormsModule,
-    ConfirmationDialog,
-  ],
+  imports: [ReactiveFormsModule, ConfirmationDialog],
   templateUrl: './product-management.html',
   styleUrl: './product-management.scss',
 })
@@ -34,10 +31,9 @@ export class ProductManagement implements OnInit {
   private readonly inventoryApi = inject(InventoryApiService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly route = inject(ActivatedRoute);
-  private readonly productFormSection =
-    viewChild<ElementRef<HTMLElement>>('productFormSection');
-  private readonly inventorySection =
-    viewChild<ElementRef<HTMLElement>>('inventorySection');
+  private inventoryEventSource: EventSource | null = null;
+  private readonly productFormSection = viewChild<ElementRef<HTMLElement>>('productFormSection');
+  private readonly inventorySection = viewChild<ElementRef<HTMLElement>>('inventorySection');
 
   readonly products = signal<Product[]>([]);
   readonly loading = signal(false);
@@ -57,14 +53,10 @@ export class ProductManagement implements OnInit {
   readonly selectedProduct = computed(() => {
     const productId = this.selectedProductId();
 
-    return (
-      this.products().find((product) => product.id === productId) ?? null
-    );
+    return this.products().find((product) => product.id === productId) ?? null;
   });
 
-  readonly isEditing = computed(
-    () => this.editingProductId() !== null,
-  );
+  readonly isEditing = computed(() => this.editingProductId() !== null);
 
   readonly productForm = new FormGroup({
     name: new FormControl('', {
@@ -144,16 +136,8 @@ export class ProductManagement implements OnInit {
 
     const request$ =
       operation === 'increase'
-        ? this.inventoryApi.increaseStock(
-          businessId,
-          productId,
-          request,
-        )
-        : this.inventoryApi.decreaseStock(
-          businessId,
-          productId,
-          request,
-        );
+        ? this.inventoryApi.increaseStock(businessId, productId, request)
+        : this.inventoryApi.decreaseStock(businessId, productId, request);
 
     request$
       .pipe(
@@ -170,13 +154,9 @@ export class ProductManagement implements OnInit {
         },
         error: (error: HttpErrorResponse) => {
           if (operation === 'decrease' && error.status === 400) {
-            this.inventoryError.set(
-              'Not enough stock available.',
-            );
+            this.inventoryError.set('Not enough stock available.');
           } else {
-            this.inventoryError.set(
-              `Could not ${operation} stock. Please try again.`,
-            );
+            this.inventoryError.set(`Could not ${operation} stock. Please try again.`);
           }
         },
       });
@@ -239,10 +219,7 @@ export class ProductManagement implements OnInit {
       )
       .subscribe({
         next: (createdProduct) => {
-          this.products.update((products) => [
-            ...products,
-            createdProduct,
-          ]);
+          this.products.update((products) => [...products, createdProduct]);
 
           this.resetProductForm();
         },
@@ -299,10 +276,7 @@ export class ProductManagement implements OnInit {
     }
   }
 
-  private updateProduct(
-    businessId: string,
-    productId: string,
-  ): void {
+  private updateProduct(businessId: string, productId: string): void {
     this.saving.set(true);
     this.productActionError.set(null);
 
@@ -318,9 +292,7 @@ export class ProductManagement implements OnInit {
         next: (updatedProduct) => {
           this.products.update((products) =>
             products.map((product) =>
-              product.id === updatedProduct.id
-                ? updatedProduct
-                : product,
+              product.id === updatedProduct.id ? updatedProduct : product,
             ),
           );
 
@@ -347,9 +319,7 @@ export class ProductManagement implements OnInit {
         next: (updatedProduct) => {
           this.products.update((products) =>
             products.map((product) =>
-              product.id === updatedProduct.id
-                ? updatedProduct
-                : product,
+              product.id === updatedProduct.id ? updatedProduct : product,
             ),
           );
         },
@@ -387,10 +357,7 @@ export class ProductManagement implements OnInit {
     });
   }
 
-  private loadInventory(
-    businessId: string,
-    productId: string,
-  ): void {
+  private loadInventory(businessId: string, productId: string): void {
     this.inventoryNotFound.set(false);
     this.inventoryLoading.set(true);
     this.inventoryError.set(null);
@@ -409,13 +376,9 @@ export class ProductManagement implements OnInit {
         error: (error: HttpErrorResponse) => {
           if (error.status === 404) {
             this.inventoryNotFound.set(true);
-            this.inventoryError.set(
-              'No inventory found for this product.',
-            );
+            this.inventoryError.set('No inventory found for this product.');
           } else {
-            this.inventoryError.set(
-              'Could not load inventory. Please try again.',
-            );
+            this.inventoryError.set('Could not load inventory. Please try again.');
           }
         },
       });
@@ -482,6 +445,31 @@ export class ProductManagement implements OnInit {
     this.deactivateProduct(product.id);
   }
 
+  private subscribeToInventoryChanges(businessId: string): void {
+    this.inventoryEventSource = this.inventoryApi.subscribeToInventoryChanges(
+      businessId,
+      (event) => {
+        const currentInventory = this.inventory();
+
+        if (currentInventory && currentInventory.productId === event.productId) {
+          this.inventory.update((inventory) =>
+            inventory
+              ? {
+                  ...inventory,
+                  quantity: event.quantity,
+                  lowStock: event.quantity <= inventory.lowStockThreshold,
+                }
+              : inventory,
+          );
+        }
+      },
+    );
+
+    this.destroyRef.onDestroy(() => {
+      this.inventoryEventSource?.close();
+    });
+  }
+
   ngOnInit(): void {
     const businessId = this.route.snapshot.queryParamMap.get('businessId');
 
@@ -492,5 +480,6 @@ export class ProductManagement implements OnInit {
 
     this.businessId.set(businessId);
     this.loadProducts(businessId);
+    this.subscribeToInventoryChanges(businessId);
   }
 }

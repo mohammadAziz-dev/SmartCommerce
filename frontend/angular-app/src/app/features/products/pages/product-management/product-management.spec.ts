@@ -9,6 +9,8 @@ import { InventoryApiService } from '../../../../core/api/inventory-api.service'
 describe('ProductManagement', () => {
   let component: ProductManagement;
   let fixture: ComponentFixture<ProductManagement>;
+  let inventoryChangedCallback:
+    ((event: { businessId: string; productId: string; quantity: number }) => void) | undefined;
 
   const productApiMock = {
     getProducts: vi.fn().mockReturnValue(of([])),
@@ -23,6 +25,18 @@ describe('ProductManagement', () => {
     getInventory: vi.fn(),
     increaseStock: vi.fn(),
     decreaseStock: vi.fn(),
+    subscribeToInventoryChanges: vi.fn(
+      (
+        _businessId: string,
+        callback: (event: { businessId: string; productId: string; quantity: number }) => void,
+      ) => {
+        inventoryChangedCallback = callback;
+
+        return {
+          close: vi.fn(),
+        };
+      },
+    ),
   };
 
   beforeEach(async () => {
@@ -65,9 +79,7 @@ describe('ProductManagement', () => {
   });
 
   it('should load products on initialization', () => {
-    expect(productApiMock.getProducts).toHaveBeenCalledWith(
-      'business-123',
-    );
+    expect(productApiMock.getProducts).toHaveBeenCalledWith('business-123');
 
     expect(component.businessId()).toBe('business-123');
     expect(component.products()).toEqual([]);
@@ -85,9 +97,7 @@ describe('ProductManagement', () => {
       active: true,
     };
 
-    productApiMock.createProduct.mockReturnValue(
-      of(createdProduct),
-    );
+    productApiMock.createProduct.mockReturnValue(of(createdProduct));
 
     component.productForm.setValue({
       name: 'USB-C Hub',
@@ -100,17 +110,14 @@ describe('ProductManagement', () => {
 
     component.submitProduct();
 
-    expect(productApiMock.createProduct).toHaveBeenCalledWith(
-      'business-123',
-      {
-        name: 'USB-C Hub',
-        description: '7-in-1 USB-C Hub',
-        sku: 'HUB-001',
-        sellingPrice: 49.99,
-        category: 'Accessories',
-        active: true,
-      },
-    );
+    expect(productApiMock.createProduct).toHaveBeenCalledWith('business-123', {
+      name: 'USB-C Hub',
+      description: '7-in-1 USB-C Hub',
+      sku: 'HUB-001',
+      sellingPrice: 49.99,
+      category: 'Accessories',
+      active: true,
+    });
 
     expect(component.products()).toEqual([createdProduct]);
     expect(component.productForm.controls.name.value).toBe('');
@@ -143,24 +150,18 @@ describe('ProductManagement', () => {
       sellingPrice: 59.99,
     });
 
-    productApiMock.updateProduct.mockReturnValue(
-      of(updatedProduct),
-    );
+    productApiMock.updateProduct.mockReturnValue(of(updatedProduct));
 
     component.submitProduct();
 
-    expect(productApiMock.updateProduct).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-      {
-        name: 'Premium USB-C Hub',
-        description: 'Old description',
-        sku: 'HUB-001',
-        sellingPrice: 59.99,
-        category: 'Accessories',
-        active: true,
-      },
-    );
+    expect(productApiMock.updateProduct).toHaveBeenCalledWith('business-123', 'product-123', {
+      name: 'Premium USB-C Hub',
+      description: 'Old description',
+      sku: 'HUB-001',
+      sellingPrice: 59.99,
+      category: 'Accessories',
+      active: true,
+    });
 
     expect(component.products()).toEqual([updatedProduct]);
     expect(component.editingProductId()).toBeNull();
@@ -186,16 +187,11 @@ describe('ProductManagement', () => {
 
     component.products.set([activeProduct]);
 
-    productApiMock.deactivateProduct.mockReturnValue(
-      of(deactivatedProduct),
-    );
+    productApiMock.deactivateProduct.mockReturnValue(of(deactivatedProduct));
 
     component.deactivateProduct(activeProduct.id);
 
-    expect(productApiMock.deactivateProduct).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-    );
+    expect(productApiMock.deactivateProduct).toHaveBeenCalledWith('business-123', 'product-123');
 
     expect(component.products()).toEqual([deactivatedProduct]);
     expect(component.products()[0].active).toBe(false);
@@ -211,18 +207,13 @@ describe('ProductManagement', () => {
       lowStock: false,
     };
 
-    inventoryApiMock.getInventory.mockReturnValue(
-      of(inventory),
-    );
+    inventoryApiMock.getInventory.mockReturnValue(of(inventory));
 
     component.selectProduct('product-123');
 
     expect(component.selectedProductId()).toBe('product-123');
 
-    expect(inventoryApiMock.getInventory).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-    );
+    expect(inventoryApiMock.getInventory).toHaveBeenCalledWith('business-123', 'product-123');
 
     expect(component.inventory()).toEqual(inventory);
     expect(component.inventoryNotFound()).toBe(false);
@@ -238,16 +229,11 @@ describe('ProductManagement', () => {
 
     component.selectProduct('product-123');
 
-    expect(inventoryApiMock.getInventory).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-    );
+    expect(inventoryApiMock.getInventory).toHaveBeenCalledWith('business-123', 'product-123');
 
     expect(component.inventory()).toBeNull();
     expect(component.inventoryNotFound()).toBe(true);
-    expect(component.inventoryError()).toBe(
-      'No inventory found for this product.',
-    );
+    expect(component.inventoryError()).toBe('No inventory found for this product.');
   });
 
   it('should create inventory for the selected product', () => {
@@ -267,20 +253,15 @@ describe('ProductManagement', () => {
       lowStockThreshold: 5,
     });
 
-    inventoryApiMock.createInventory.mockReturnValue(
-      of(createdInventory),
-    );
+    inventoryApiMock.createInventory.mockReturnValue(of(createdInventory));
 
     component.createInventory();
 
-    expect(inventoryApiMock.createInventory).toHaveBeenCalledWith(
-      'business-123',
-      {
-        productId: 'product-123',
-        quantity: 20,
-        lowStockThreshold: 5,
-      },
-    );
+    expect(inventoryApiMock.createInventory).toHaveBeenCalledWith('business-123', {
+      productId: 'product-123',
+      quantity: 20,
+      lowStockThreshold: 5,
+    });
 
     expect(component.inventory()).toEqual(createdInventory);
   });
@@ -307,19 +288,13 @@ describe('ProductManagement', () => {
       amount: 5,
     });
 
-    inventoryApiMock.increaseStock.mockReturnValue(
-      of(updatedInventory),
-    );
+    inventoryApiMock.increaseStock.mockReturnValue(of(updatedInventory));
 
     component.increaseStock();
 
-    expect(inventoryApiMock.increaseStock).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-      {
-        amount: 5,
-      },
-    );
+    expect(inventoryApiMock.increaseStock).toHaveBeenCalledWith('business-123', 'product-123', {
+      amount: 5,
+    });
 
     expect(component.inventory()).toEqual(updatedInventory);
     expect(component.stockAdjustmentForm.controls.amount.value).toBe(1);
@@ -347,19 +322,13 @@ describe('ProductManagement', () => {
       amount: 5,
     });
 
-    inventoryApiMock.decreaseStock.mockReturnValue(
-      of(updatedInventory),
-    );
+    inventoryApiMock.decreaseStock.mockReturnValue(of(updatedInventory));
 
     component.decreaseStock();
 
-    expect(inventoryApiMock.decreaseStock).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-      {
-        amount: 5,
-      },
-    );
+    expect(inventoryApiMock.decreaseStock).toHaveBeenCalledWith('business-123', 'product-123', {
+      amount: 5,
+    });
 
     expect(component.inventory()).toEqual(updatedInventory);
     expect(component.stockAdjustmentForm.controls.amount.value).toBe(1);
@@ -380,10 +349,8 @@ describe('ProductManagement', () => {
 
     component.decreaseStock();
 
-    expect(component.inventoryError()).toBe(
-      'Not enough stock available.',
-    );
-  })
+    expect(component.inventoryError()).toBe('Not enough stock available.');
+  });
 
   it('should not submit an invalid product form', () => {
     component.productForm.patchValue({
@@ -407,9 +374,7 @@ describe('ProductManagement', () => {
       active: true,
     });
 
-    productApiMock.createProduct.mockReturnValue(
-      throwError(() => new Error('API error')),
-    );
+    productApiMock.createProduct.mockReturnValue(throwError(() => new Error('API error')));
 
     component.submitProduct();
 
@@ -417,9 +382,7 @@ describe('ProductManagement', () => {
   });
 
   it('should show an error when loading products fails', () => {
-    productApiMock.getProducts.mockReturnValue(
-      throwError(() => new Error('API error')),
-    );
+    productApiMock.getProducts.mockReturnValue(throwError(() => new Error('API error')));
 
     component.loadProducts('business-123');
 
@@ -427,15 +390,11 @@ describe('ProductManagement', () => {
   });
 
   it('should show an error when loading inventory fails', () => {
-    inventoryApiMock.getInventory.mockReturnValue(
-      throwError(() => ({ status: 500 })),
-    );
+    inventoryApiMock.getInventory.mockReturnValue(throwError(() => ({ status: 500 })));
 
     component.selectProduct('product-123');
 
-    expect(component.inventoryError()).toBe(
-      'Could not load inventory. Please try again.',
-    );
+    expect(component.inventoryError()).toBe('Could not load inventory. Please try again.');
   });
 
   it('should request and cancel product deactivation', () => {
@@ -479,17 +438,12 @@ describe('ProductManagement', () => {
     component.products.set([product]);
     component.productPendingDeactivation.set(product);
 
-    productApiMock.deactivateProduct.mockReturnValue(
-      of(deactivatedProduct),
-    );
+    productApiMock.deactivateProduct.mockReturnValue(of(deactivatedProduct));
 
     component.confirmProductDeactivation();
 
     expect(component.productPendingDeactivation()).toBeNull();
-    expect(productApiMock.deactivateProduct).toHaveBeenCalledWith(
-      'business-123',
-      'product-123',
-    );
+    expect(productApiMock.deactivateProduct).toHaveBeenCalledWith('business-123', 'product-123');
   });
 
   it('should request and cancel stock decrease confirmation', () => {
@@ -513,14 +467,30 @@ describe('ProductManagement', () => {
       amount: 5,
     });
 
-    inventoryApiMock.increaseStock.mockReturnValue(
-      throwError(() => ({ status: 500 })),
-    );
+    inventoryApiMock.increaseStock.mockReturnValue(throwError(() => ({ status: 500 })));
 
     component.increaseStock();
 
-    expect(component.inventoryError()).toBe(
-      'Could not increase stock. Please try again.',
-    );
+    expect(component.inventoryError()).toBe('Could not increase stock. Please try again.');
+  });
+
+  it('should update inventory when an SSE inventory change is received', () => {
+    component.inventory.set({
+      id: 'inventory-123',
+      businessId: 'business-123',
+      productId: 'product-123',
+      quantity: 20,
+      lowStockThreshold: 5,
+      lowStock: false,
+    });
+
+    inventoryChangedCallback?.({
+      businessId: 'business-123',
+      productId: 'product-123',
+      quantity: 4,
+    });
+
+    expect(component.inventory()?.quantity).toBe(4);
+    expect(component.inventory()?.lowStock).toBe(true);
   });
 });
