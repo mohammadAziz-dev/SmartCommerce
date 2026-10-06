@@ -5,6 +5,7 @@ import com.resend.core.exception.ResendException;
 import com.resend.services.emails.model.CreateEmailOptions;
 import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderItemResponse;
 import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,15 @@ public class ResendEmailService implements EmailService {
 
     private final Resend resend;
 
-    public ResendEmailService(@Value("${resend.api-key}") String apiKey) {
-        this.resend = new Resend(apiKey);
+    @Autowired
+    public ResendEmailService(
+            @Value("${resend.api-key}") String apiKey
+    ) {
+        this(new Resend(apiKey));
+    }
+
+    ResendEmailService(Resend resend) {
+        this.resend = resend;
     }
 
     @Override
