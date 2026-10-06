@@ -2,10 +2,13 @@ package dev.mohammadaziz.smartcommerce.backend.order;
 
 import dev.mohammadaziz.smartcommerce.backend.business.Business;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
+import dev.mohammadaziz.smartcommerce.backend.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,11 +16,21 @@ class OrderTest {
 
     private Business business;
     private Product product;
+    private User user;
     private Order order;
 
     @BeforeEach
     void setUp() {
         business = new Business("Mohammad Electronics");
+
+        user = new User(
+                UUID.randomUUID(),
+                "Mohammad Aziz",
+                "customer@example.com",
+                "hashed-password",
+                true,
+                Instant.now()
+        );
 
         product = new Product(
                 business,
@@ -29,12 +42,13 @@ class OrderTest {
                 true
         );
 
-        order = new Order(business);
+        order = new Order(business, user);
     }
 
     @Test
     void shouldCreateOrderWithDefaultValues() {
         assertEquals(business, order.getBusiness());
+        assertEquals(user, order.getUser());
         assertEquals(OrderStatus.CREATED, order.getStatus());
         assertNotNull(order.getCreatedAt());
         assertTrue(order.getItems().isEmpty());

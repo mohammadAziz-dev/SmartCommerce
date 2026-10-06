@@ -6,13 +6,14 @@ import dev.mohammadaziz.smartcommerce.backend.business.BusinessRepository;
 import dev.mohammadaziz.smartcommerce.backend.inventory.InsufficientStockException;
 import dev.mohammadaziz.smartcommerce.backend.inventory.InventoryService;
 import dev.mohammadaziz.smartcommerce.backend.inventory.dto.InventoryResponse;
-import dev.mohammadaziz.smartcommerce.backend.order.dto.CreateOrderItemRequest;
-import dev.mohammadaziz.smartcommerce.backend.order.dto.CreateOrderRequest;
-import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderItemResponse;
-import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderResponse;
+import dev.mohammadaziz.smartcommerce.backend.order.dto.*;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductNotFoundException;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductRepository;
+import dev.mohammadaziz.smartcommerce.backend.user.User;
+import dev.mohammadaziz.smartcommerce.backend.user.UserRepository;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,24 +27,37 @@ public class OrderService {
     private final BusinessRepository businessRepository;
     private final ProductRepository productRepository;
     private final InventoryService inventoryService;
+    private final UserRepository userRepository;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OrderService(
             OrderRepository orderRepository,
             BusinessRepository businessRepository,
             ProductRepository productRepository,
-            InventoryService inventoryService
+            InventoryService inventoryService,
+            UserRepository userRepository,
+            ApplicationEventPublisher eventPublisher
     ) {
         this.orderRepository = orderRepository;
         this.businessRepository = businessRepository;
         this.productRepository = productRepository;
         this.inventoryService = inventoryService;
+        this.userRepository = userRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     @Transactional
-    public OrderResponse placeOrder(UUID businessId, CreateOrderRequest request) {
+    public OrderResponse placeOrder(
+            UUID businessId,
+            CreateOrderRequest request,
+            String customerEmail
+    ) {
         Business business = businessRepository
                 .findById(businessId)
                 .orElseThrow(() -> new BusinessNotFoundException(businessId));
+
+        User user = userRepository.findByEmail(customerEmail)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
 
         List<ValidatedOrderItem> validatedItems = new ArrayList<>();
         Set<UUID> productIds = new HashSet<>();
@@ -69,7 +83,7 @@ public class OrderService {
             );
         }
 
-        Order order = new Order(business);
+        Order order = new Order(business, user);
 
         for (ValidatedOrderItem validatedItem : validatedItems) {
             Product product = validatedItem.product();
@@ -88,8 +102,17 @@ public class OrderService {
         }
 
         Order savedOrder = orderRepository.save(order);
+        OrderResponse orderResponse = toOrderResponse(savedOrder);
 
-        return toOrderResponse(savedOrder);
+        eventPublisher.publishEvent(
+                new OrderPlacedEvent(
+                        user.getEmail(),
+                        user.getName(),
+                        orderResponse
+                )
+        );
+
+        return orderResponse;
     }
 
     @Transactional(readOnly = true)

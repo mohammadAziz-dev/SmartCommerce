@@ -4,17 +4,23 @@ import dev.mohammadaziz.smartcommerce.backend.business.Business;
 import dev.mohammadaziz.smartcommerce.backend.business.BusinessRepository;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductRepository;
+import dev.mohammadaziz.smartcommerce.backend.user.User;
+import dev.mohammadaziz.smartcommerce.backend.user.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.UUID;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class OrderRepositoryTest {
 
@@ -26,6 +32,20 @@ class OrderRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    private User createUser(String email) {
+        return userRepository.save(new User(
+                UUID.randomUUID(),
+                "Test Customer",
+                email,
+                "hashed-password",
+                true,
+                Instant.now()
+        ));
+    }
 
     @Test
     void shouldPersistOrderWithItems() {
@@ -44,7 +64,9 @@ class OrderRepositoryTest {
                 )
         );
 
-        Order order = new Order(business);
+        User user = createUser("repository-customer-1@example.com");
+
+        Order order = new Order(business, user);
 
         order.addItem(
                 product,
@@ -77,8 +99,10 @@ class OrderRepositoryTest {
         Business businessB =
                 businessRepository.save(new Business("Other Business"));
 
-        Order orderA = orderRepository.save(new Order(businessA));
-        orderRepository.save(new Order(businessB));
+        User user = createUser("repository-customer-2@example.com");
+
+        Order orderA = orderRepository.save(new Order(businessA, user));
+        orderRepository.save(new Order(businessB, user));
 
         List<Order> orders =
                 orderRepository.findAllByBusinessId(businessA.getId());
@@ -99,8 +123,10 @@ class OrderRepositoryTest {
         Business businessB =
                 businessRepository.save(new Business("Other Business"));
 
+        User user = createUser("repository-customer-3@example.com");
+
         Order order =
-                orderRepository.save(new Order(businessA));
+                orderRepository.save(new Order(businessA, user));
 
         var result = orderRepository.findByIdAndBusinessId(
                 order.getId(),

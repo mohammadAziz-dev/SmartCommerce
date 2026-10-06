@@ -5,6 +5,7 @@ import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 import java.util.UUID;
@@ -36,8 +37,13 @@ public class OrderController {
     @ResponseStatus(HttpStatus.CREATED)
     public OrderResponse placeOrder(
             @PathVariable UUID businessId,
-            @Valid @RequestBody CreateOrderRequest request
+            @Valid @RequestBody CreateOrderRequest request,
+            Authentication authentication
     ) {
-        return orderService.placeOrder(businessId, request);
+        return orderService.placeOrder(
+                businessId,
+                request,
+                authentication.getName()
+        );
     }
 }

@@ -14,6 +14,7 @@ import dev.mohammadaziz.smartcommerce.backend.user.SmartCommerceUserDetailsServi
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.security.config.Customizer;
+import org.springframework.http.HttpMethod;
 
 @Configuration
 public class SecurityConfig {
@@ -34,6 +35,10 @@ public class SecurityConfig {
                                 "/api/auth/login",
                                 "/api/auth/csrf"
                         ).permitAll()
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/businesses/*/orders"
+                        ).authenticated()
                         .requestMatchers("/api/auth/me").authenticated()
                         .anyRequest().permitAll()
                 )

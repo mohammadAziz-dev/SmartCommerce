@@ -14,11 +14,14 @@ import dev.mohammadaziz.smartcommerce.backend.order.dto.OrderResponse;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductNotFoundException;
 import dev.mohammadaziz.smartcommerce.backend.product.ProductRepository;
+import dev.mohammadaziz.smartcommerce.backend.user.User;
+import dev.mohammadaziz.smartcommerce.backend.user.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -33,6 +36,8 @@ import static org.mockito.Mockito.*;
 @ExtendWith(MockitoExtension.class)
 class OrderServiceTest {
 
+    private static final String CUSTOMER_EMAIL = "customer@example.com";
+
     @Mock
     private OrderRepository orderRepository;
 
@@ -45,15 +50,26 @@ class OrderServiceTest {
     @Mock
     private InventoryService inventoryService;
 
+    @Mock
+    private UserRepository userRepository;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     private OrderService orderService;
+    private User user;
 
     @BeforeEach
     void setUp() {
+        user = mock(User.class);
+
         orderService = new OrderService(
                 orderRepository,
                 businessRepository,
                 productRepository,
-                inventoryService
+                inventoryService,
+                userRepository,
+                eventPublisher
         );
     }
 
@@ -79,6 +95,9 @@ class OrderServiceTest {
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
 
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
+
         when(productRepository.findByIdAndBusinessId(productId, businessId))
                 .thenReturn(Optional.of(product));
 
@@ -97,7 +116,7 @@ class OrderServiceTest {
         when(orderRepository.save(any(Order.class)))
                 .thenAnswer(invocation -> invocation.getArgument(0));
 
-        OrderResponse response = orderService.placeOrder(businessId, request);
+        OrderResponse response = orderService.placeOrder(businessId, request, CUSTOMER_EMAIL);
 
         assertNotNull(response);
         assertEquals(businessId, response.businessId());
@@ -134,7 +153,7 @@ class OrderServiceTest {
 
         assertThrows(
                 BusinessNotFoundException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
     }
 
@@ -152,12 +171,15 @@ class OrderServiceTest {
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
 
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
+
         when(productRepository.findByIdAndBusinessId(productId, businessId))
                 .thenReturn(Optional.empty());
 
         assertThrows(
                 ProductNotFoundException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
     }
 
@@ -178,6 +200,9 @@ class OrderServiceTest {
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
 
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
+
         when(productRepository.findByIdAndBusinessId(productId, businessId))
                 .thenReturn(Optional.of(product));
 
@@ -186,7 +211,7 @@ class OrderServiceTest {
 
         assertThrows(
                 InventoryNotFoundException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
     }
 
@@ -207,6 +232,9 @@ class OrderServiceTest {
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
 
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
+
         when(productRepository.findByIdAndBusinessId(productId, businessId))
                 .thenReturn(Optional.of(product));
 
@@ -224,7 +252,7 @@ class OrderServiceTest {
 
         assertThrows(
                 InsufficientStockException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
     }
 
@@ -248,6 +276,9 @@ class OrderServiceTest {
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
 
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
+
         when(productRepository.findByIdAndBusinessId(productId, businessId))
                 .thenReturn(Optional.of(product));
 
@@ -265,7 +296,7 @@ class OrderServiceTest {
 
         assertThrows(
                 DuplicateOrderProductException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
     }
 
@@ -291,6 +322,9 @@ class OrderServiceTest {
 
         when(businessRepository.findById(businessId))
                 .thenReturn(Optional.of(business));
+
+        when(userRepository.findByEmail(CUSTOMER_EMAIL))
+                .thenReturn(Optional.of(user));
 
         when(productRepository.findByIdAndBusinessId(firstProductId, businessId))
                 .thenReturn(Optional.of(firstProduct));
@@ -320,7 +354,7 @@ class OrderServiceTest {
 
         assertThrows(
                 InsufficientStockException.class,
-                () -> orderService.placeOrder(businessId, request)
+                () -> orderService.placeOrder(businessId, request, CUSTOMER_EMAIL)
         );
         verify(inventoryService, never())
                 .decreaseStock(any(UUID.class), any(UUID.class), anyInt());
@@ -336,7 +370,7 @@ class OrderServiceTest {
         Business business = mock(Business.class);
         when(business.getId()).thenReturn(businessId);
 
-        Order order = new Order(business);
+        Order order = new Order(business, user);
 
         when(orderRepository.findAllByBusinessId(businessId))
                 .thenReturn(List.of(order));
