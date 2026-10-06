@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -30,6 +31,14 @@ class OrderControllerTest {
 
     @MockitoBean
     private OrderService orderService;
+
+    private UsernamePasswordAuthenticationToken customerAuthentication() {
+        return UsernamePasswordAuthenticationToken.authenticated(
+                "customer@example.com",
+                null,
+                List.of()
+        );
+    }
 
     @Test
     void shouldGetOrdersForBusiness() throws Exception {
@@ -161,11 +170,13 @@ class OrderControllerTest {
 
         when(orderService.placeOrder(
                 eq(businessId),
-                any(CreateOrderRequest.class)
+                any(CreateOrderRequest.class),
+                eq("customer@example.com")
         )).thenReturn(response);
 
         mockMvc.perform(
                         post("/api/businesses/{businessId}/orders", businessId)
+                                .principal(customerAuthentication())
                                 .contentType("application/json")
                                 .content("""
                                         {
@@ -195,6 +206,7 @@ class OrderControllerTest {
 
         mockMvc.perform(
                         post("/api/businesses/{businessId}/orders", businessId)
+                                .principal(customerAuthentication())
                                 .contentType("application/json")
                                 .content("""
                                         {
@@ -205,7 +217,11 @@ class OrderControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(orderService, never())
-                .placeOrder(eq(businessId), any(CreateOrderRequest.class));
+                .placeOrder(
+                        eq(businessId),
+                        any(CreateOrderRequest.class),
+                        anyString()
+                );
     }
 
     @Test
@@ -215,6 +231,7 @@ class OrderControllerTest {
 
         mockMvc.perform(
                         post("/api/businesses/{businessId}/orders", businessId)
+                                .principal(customerAuthentication())
                                 .contentType("application/json")
                                 .content("""
                                         {
@@ -230,7 +247,11 @@ class OrderControllerTest {
                 .andExpect(status().isBadRequest());
 
         verify(orderService, never())
-                .placeOrder(eq(businessId), any(CreateOrderRequest.class));
+                .placeOrder(
+                        eq(businessId),
+                        any(CreateOrderRequest.class),
+                        anyString()
+                );
     }
 
     @Test
@@ -240,11 +261,13 @@ class OrderControllerTest {
 
         when(orderService.placeOrder(
                 eq(businessId),
-                any(CreateOrderRequest.class)
+                any(CreateOrderRequest.class),
+                eq("customer@example.com")
         )).thenThrow(new InsufficientStockException());
 
         mockMvc.perform(
                         post("/api/businesses/{businessId}/orders", businessId)
+                                .principal(customerAuthentication())
                                 .contentType("application/json")
                                 .content("""
                                         {
@@ -267,11 +290,13 @@ class OrderControllerTest {
 
         when(orderService.placeOrder(
                 eq(businessId),
-                any(CreateOrderRequest.class)
+                any(CreateOrderRequest.class),
+                eq("customer@example.com")
         )).thenThrow(new ProductNotFoundException(productId));
 
         mockMvc.perform(
                         post("/api/businesses/{businessId}/orders", businessId)
+                                .principal(customerAuthentication())
                                 .contentType("application/json")
                                 .content("""
                                         {

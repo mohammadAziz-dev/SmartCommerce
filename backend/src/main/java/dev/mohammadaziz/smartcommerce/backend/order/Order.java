@@ -2,6 +2,7 @@ package dev.mohammadaziz.smartcommerce.backend.order;
 
 import dev.mohammadaziz.smartcommerce.backend.business.Business;
 import dev.mohammadaziz.smartcommerce.backend.product.Product;
+import dev.mohammadaziz.smartcommerce.backend.user.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,10 @@ public class Order {
     @JoinColumn(name = "business_id", nullable = false)
     private Business business;
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -40,8 +45,9 @@ public class Order {
     )
     private List<OrderItem> items = new ArrayList<>();
 
-    public Order(Business business) {
+    public Order(Business business, User user) {
         this.business = business;
+        this.user = user;
         this.status = OrderStatus.CREATED;
         this.createdAt = Instant.now();
     }
