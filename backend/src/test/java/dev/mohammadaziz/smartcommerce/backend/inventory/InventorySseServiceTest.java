@@ -7,6 +7,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.UUID;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -67,7 +68,7 @@ class InventorySseServiceTest {
                         15
                 );
 
-        inventorySseService.send(event);
+        assertDoesNotThrow(() -> inventorySseService.send(event));
     }
 
     @Test
