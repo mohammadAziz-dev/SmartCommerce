@@ -18,7 +18,7 @@ public class InventorySseService {
             new ConcurrentHashMap<>();
 
     public SseEmitter subscribe(UUID businessId) {
-        SseEmitter emitter = new SseEmitter(0L);
+        SseEmitter emitter = createEmitter();
 
         emittersByBusiness
                 .computeIfAbsent(businessId, id -> new CopyOnWriteArrayList<>())
@@ -45,10 +45,14 @@ public class InventorySseService {
                                 .name("inventory-changed")
                                 .data(event)
                 );
-            } catch (IOException exception) {
+            } catch (IOException _) {
                 removeEmitter(event.businessId(), emitter);
             }
         }
+    }
+
+    SseEmitter createEmitter() {
+        return new SseEmitter(0L);
     }
 
     private void removeEmitter(UUID businessId, SseEmitter emitter) {
