@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 import {ActivatedRoute} from '@angular/router';
-import {of} from 'rxjs';
+import {of, throwError} from 'rxjs';
 
 import {InventoryManagement} from './inventory-management';
 import {InventoryApiService} from '../../../../core/api/inventory-api.service';
@@ -218,5 +218,83 @@ describe('InventoryManagement', () => {
 
     expect(updatedInventory.quantity).toBe(3);
     expect(updatedInventory.lowStock).toBe(true);
+  });
+
+  it('should return no selected inventory when no product is selected', () => {
+    expect(component.selectedInventory()).toBeNull();
+  });
+
+  it('should cancel pending inventory actions', () => {
+    component.pendingStockIncrease.set(5);
+    component.pendingStockDecrease.set(5);
+    component.pendingInventoryCreation.set({
+      quantity: 10,
+      lowStockThreshold: 3,
+    });
+
+    component.cancelStockIncrease();
+    component.cancelStockDecrease();
+    component.cancelInventoryCreation();
+
+    expect(component.pendingStockIncrease()).toBeNull();
+    expect(component.pendingStockDecrease()).toBeNull();
+    expect(component.pendingInventoryCreation()).toBeNull();
+  });
+
+  it('should not request stock adjustment when the form is invalid', () => {
+    component.stockAdjustmentForm.controls.amount.setValue(0);
+
+    component.requestStockIncrease();
+    component.requestStockDecrease();
+
+    expect(component.pendingStockIncrease()).toBeNull();
+    expect(component.pendingStockDecrease()).toBeNull();
+    expect(component.stockAdjustmentForm.touched).toBe(true);
+  });
+
+  it('should not request inventory creation when the form is invalid', () => {
+    component.inventoryForm.setValue({
+      quantity: -1,
+      lowStockThreshold: -1,
+    });
+
+    component.requestInventoryCreation();
+
+    expect(component.pendingInventoryCreation()).toBeNull();
+    expect(component.inventoryForm.touched).toBe(true);
+  });
+
+  it('should show an error when decreasing more stock than available', () => {
+    inventoryApiMock.decreaseStock.mockReturnValue(
+      throwError(() => ({status: 400})),
+    );
+
+    component.selectProduct(product.id);
+    component.stockAdjustmentForm.setValue({
+      amount: 100,
+    });
+
+    component.decreaseStock();
+
+    expect(component.inventoryActionError()).toBe(
+      'Not enough stock available.',
+    );
+  });
+
+  it('should show an error when increasing stock fails', () => {
+    inventoryApiMock.increaseStock.mockReturnValue(
+      throwError(() => ({status: 500})),
+    );
+
+    component.selectProduct(product.id);
+    component.stockAdjustmentForm.setValue({
+      amount: 5,
+    });
+
+    component.increaseStock();
+
+    expect(component.inventoryActionError()).toBe(
+      'Could not increase stock. Please try again.',
+    );
   });
 });
