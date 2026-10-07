@@ -1,8 +1,13 @@
 import { Link } from "react-router-dom";
 import { useCart } from "../hooks/useCart";
 import { useState } from "react";
-import { placeOrder } from "../api/ordersApi";
 import type { OrderResponse } from "../models/Order";
+import { completeCheckout, createPayment } from "../api/paymentApi";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+import PaymentForm from "../components/PaymentForm";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 export function CheckoutPage() {
   const { items, totalPrice, clearCart } = useCart();
@@ -10,6 +15,7 @@ export function CheckoutPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [order, setOrder] = useState<OrderResponse | null>(null);
+  const [clientSecret, setClientSecret] = useState<string | null>(null);
 
   async function handleSubmit() {
     if (isSubmitting) {
@@ -27,15 +33,14 @@ export function CheckoutPage() {
         })),
       };
 
-      const createdOrder = await placeOrder(
+      const payment = await createPayment(
         import.meta.env.VITE_BUSINESS_ID,
         request,
       );
 
-      setOrder(createdOrder);
-      clearCart();
+      setClientSecret(payment.clientSecret);
     } catch {
-      setError("Could not place your order. Please try again.");
+      setError("Could not start payment. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -100,9 +105,33 @@ export function CheckoutPage() {
 
       {error && <p role="alert">{error}</p>}
 
-      <button type="button" onClick={handleSubmit} disabled={isSubmitting}>
-        {isSubmitting ? "Placing order..." : "Place order"}
-      </button>
+      {clientSecret ? (
+        <Elements stripe={stripePromise} options={{ clientSecret }}>
+          <PaymentForm
+            onPaymentSuccess={async (paymentIntentId) => {
+              const request = {
+                paymentIntentId,
+                items: items.map((item) => ({
+                  productId: item.product.id,
+                  quantity: item.quantity,
+                })),
+              };
+
+              const createdOrder = await completeCheckout(
+                import.meta.env.VITE_BUSINESS_ID,
+                request,
+              );
+
+              setOrder(createdOrder);
+              clearCart();
+            }}
+          />
+        </Elements>
+      ) : (
+        <button type="button" onClick={handleSubmit} disabled={isSubmitting}>
+          {isSubmitting ? "Preparing payment..." : "Continue to payment"}
+        </button>
+      )}
     </section>
   );
 }
