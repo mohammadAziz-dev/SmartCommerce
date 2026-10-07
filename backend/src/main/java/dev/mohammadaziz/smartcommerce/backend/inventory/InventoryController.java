@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -34,6 +35,13 @@ public class InventoryController {
             @PathVariable UUID productId
     ) {
         return inventoryService.getInventoryResponse(businessId, productId);
+    }
+
+    @GetMapping
+    public List<InventoryResponse> getInventories(
+            @PathVariable UUID businessId
+    ) {
+        return inventoryService.getInventories(businessId);
     }
 
     @PatchMapping("/{productId}/increase")
