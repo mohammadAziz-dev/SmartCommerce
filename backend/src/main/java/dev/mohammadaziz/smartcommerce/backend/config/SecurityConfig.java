@@ -37,7 +37,9 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers(
                                 HttpMethod.POST,
-                                "/api/businesses/*/orders"
+                                "/api/businesses/*/orders",
+                                "/api/businesses/*/payments",
+                                "/api/businesses/*/payments/complete"
                         ).authenticated()
                         .requestMatchers("/api/auth/me").authenticated()
                         .anyRequest().permitAll()
