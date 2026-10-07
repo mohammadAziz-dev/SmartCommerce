@@ -1,13 +1,13 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Observable} from 'rxjs';
 
 import {
   CreateInventoryRequest,
   Inventory,
   StockAdjustmentRequest,
 } from '../../models/inventory.model';
-import { environment } from '../../../environments/environment';
+import {environment} from '../../../environments/environment';
 
 export interface InventoryChangedEvent {
   businessId: string;
@@ -26,6 +26,12 @@ export class InventoryApiService {
     return this.http.post<Inventory>(
       `${this.apiBaseUrl}/api/businesses/${businessId}/inventory`,
       request,
+    );
+  }
+
+  getInventories(businessId: string): Observable<Inventory[]> {
+    return this.http.get<Inventory[]>(
+      `${this.apiBaseUrl}/api/businesses/${businessId}/inventory`,
     );
   }
 
@@ -63,7 +69,7 @@ export class InventoryApiService {
   ): EventSource {
     const eventSource = new EventSource(
       `${this.apiBaseUrl}/api/businesses/${businessId}/inventory/events`,
-      { withCredentials: true },
+      {withCredentials: true},
     );
 
     eventSource.addEventListener('inventory-changed', (event) => {

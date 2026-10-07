@@ -1,0 +1,161 @@
+:host {
+  display: block;
+}
+
+.inventory-management {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 2rem;
+  color: #1f2937;
+}
+
+.page-header {
+  margin-bottom: 2rem;
+
+  h1 {
+    margin: 0.25rem 0 0.5rem;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.2;
+    color: #111827;
+  }
+}
+
+.page-eyebrow {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #2563eb;
+}
+
+.page-description,
+.section-header p {
+  margin: 0;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+
+  h2 {
+    margin: 0 0 0.25rem;
+    color: #111827;
+  }
+}
+
+.count-badge {
+  flex-shrink: 0;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: #eff6ff;
+  color: #1d4ed8;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.inventory-table-wrapper {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.875rem;
+  background: #ffffff;
+}
+
+.inventory-table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+  }
+
+  th {
+    background: #f9fafb;
+    font-size: 0.8rem;
+    color: #6b7280;
+  }
+
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+}
+
+.product-sku {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.status-not-configured {
+  background: #f3f4f6;
+  color: #4b5563;
+}
+
+.management-panel {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.875rem;
+  background: #ffffff;
+}
+
+.inventory-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    background: #f9fafb;
+  }
+
+  span {
+    font-size: 0.8rem;
+  }
+
+  strong {
+    font-size: 1.4rem;
+  }
+}
+
+.stock-form,
+.inventory-form {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .inventory-management {
+    padding: 1rem;
+  }
+
+  .section-header {
+    flex-direction: column;
+  }
+
+  .inventory-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .stock-form,
+  .inventory-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
