@@ -57,6 +57,7 @@ class OrderRepositoryTest {
                         business,
                         "Wireless Mouse",
                         "Wireless ergonomic mouse",
+                        null,
                         "MOUSE-001",
                         new BigDecimal("29.99"),
                         "Electronics",

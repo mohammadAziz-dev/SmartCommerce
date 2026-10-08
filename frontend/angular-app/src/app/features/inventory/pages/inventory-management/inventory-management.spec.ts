@@ -1,12 +1,12 @@
-import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {of, throwError} from 'rxjs';
-import {BusinessContextService} from '../../../../core/services/business-context.service';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { of, throwError } from 'rxjs';
+import { BusinessContextService } from '../../../../core/services/business-context.service';
 
-import {InventoryManagement} from './inventory-management';
-import {InventoryApiService} from '../../../../core/api/inventory-api.service';
-import {ProductApiService} from '../../../../core/api/product-api.service';
-import {Inventory} from '../../../../models/inventory.model';
-import {Product} from '../../../../models/product.model';
+import { InventoryManagement } from './inventory-management';
+import { InventoryApiService } from '../../../../core/api/inventory-api.service';
+import { ProductApiService } from '../../../../core/api/product-api.service';
+import { Inventory } from '../../../../models/inventory.model';
+import { Product } from '../../../../models/product.model';
 
 describe('InventoryManagement', () => {
   let fixture: ComponentFixture<InventoryManagement>;
@@ -20,6 +20,7 @@ describe('InventoryManagement', () => {
     businessId,
     name: 'Wireless Mouse',
     description: 'Test mouse',
+    imageUrl: null,
     sku: 'MOUSE-001',
     sellingPrice: 29.99,
     category: 'Electronics',
@@ -73,7 +74,7 @@ describe('InventoryManagement', () => {
     }));
 
     businessContext = TestBed.inject(BusinessContextService);
-    businessContext.selectBusiness({id: businessId, name: 'SmartOffice Store'});
+    businessContext.selectBusiness({ id: businessId, name: 'SmartOffice Store' });
 
     fixture = TestBed.createComponent(InventoryManagement);
     component = fixture.componentInstance;
@@ -109,7 +110,7 @@ describe('InventoryManagement', () => {
     inventoryApiMock.getInventories.mockReturnValue(of([secondInventory]));
     component.selectProduct(product.id);
 
-    businessContext.selectBusiness({id: secondBusinessId, name: 'Aziz Electronics'});
+    businessContext.selectBusiness({ id: secondBusinessId, name: 'Aziz Electronics' });
     await fixture.whenStable();
 
     expect(oldConnection.close).toHaveBeenCalled();
@@ -150,11 +151,9 @@ describe('InventoryManagement', () => {
 
     component.confirmStockIncrease();
 
-    expect(inventoryApiMock.increaseStock).toHaveBeenCalledWith(
-      businessId,
-      product.id,
-      {amount: 5},
-    );
+    expect(inventoryApiMock.increaseStock).toHaveBeenCalledWith(businessId, product.id, {
+      amount: 5,
+    });
 
     expect(component.inventories()[0].quantity).toBe(25);
     expect(component.pendingStockIncrease()).toBeNull();
@@ -179,11 +178,9 @@ describe('InventoryManagement', () => {
 
     component.confirmStockDecrease();
 
-    expect(inventoryApiMock.decreaseStock).toHaveBeenCalledWith(
-      businessId,
-      product.id,
-      {amount: 5},
-    );
+    expect(inventoryApiMock.decreaseStock).toHaveBeenCalledWith(businessId, product.id, {
+      amount: 5,
+    });
 
     expect(component.inventories()[0].quantity).toBe(15);
     expect(component.pendingStockDecrease()).toBeNull();
@@ -225,22 +222,18 @@ describe('InventoryManagement', () => {
 
     component.confirmInventoryCreation();
 
-    expect(inventoryApiMock.createInventory).toHaveBeenCalledWith(
-      businessId,
-      {
-        productId: productWithoutInventory.id,
-        quantity: 10,
-        lowStockThreshold: 3,
-      },
-    );
+    expect(inventoryApiMock.createInventory).toHaveBeenCalledWith(businessId, {
+      productId: productWithoutInventory.id,
+      quantity: 10,
+      lowStockThreshold: 3,
+    });
 
     expect(component.inventories()).toContainEqual(createdInventory);
     expect(component.pendingInventoryCreation()).toBeNull();
   });
 
   it('should update inventory when an SSE event is received', () => {
-    const callback =
-      inventoryApiMock.subscribeToInventoryChanges.mock.calls[0][1];
+    const callback = inventoryApiMock.subscribeToInventoryChanges.mock.calls[0][1];
 
     callback({
       businessId,
@@ -299,9 +292,7 @@ describe('InventoryManagement', () => {
   });
 
   it('should show an error when decreasing more stock than available', () => {
-    inventoryApiMock.decreaseStock.mockReturnValue(
-      throwError(() => ({status: 400})),
-    );
+    inventoryApiMock.decreaseStock.mockReturnValue(throwError(() => ({ status: 400 })));
 
     component.selectProduct(product.id);
     component.stockAdjustmentForm.setValue({
@@ -310,15 +301,11 @@ describe('InventoryManagement', () => {
 
     component.decreaseStock();
 
-    expect(component.inventoryActionError()).toBe(
-      'Not enough stock available.',
-    );
+    expect(component.inventoryActionError()).toBe('Not enough stock available.');
   });
 
   it('should show an error when increasing stock fails', () => {
-    inventoryApiMock.increaseStock.mockReturnValue(
-      throwError(() => ({status: 500})),
-    );
+    inventoryApiMock.increaseStock.mockReturnValue(throwError(() => ({ status: 500 })));
 
     component.selectProduct(product.id);
     component.stockAdjustmentForm.setValue({
@@ -327,8 +314,6 @@ describe('InventoryManagement', () => {
 
     component.increaseStock();
 
-    expect(component.inventoryActionError()).toBe(
-      'Could not increase stock. Please try again.',
-    );
+    expect(component.inventoryActionError()).toBe('Could not increase stock. Please try again.');
   });
 });

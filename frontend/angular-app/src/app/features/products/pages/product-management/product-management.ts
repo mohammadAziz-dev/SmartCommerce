@@ -8,26 +8,21 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {RouterLink} from '@angular/router';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {switchMap, of, catchError, tap, finalize} from 'rxjs';
-import {toObservable} from '@angular/core/rxjs-interop';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { switchMap, of, catchError, tap, finalize } from 'rxjs';
+import { toObservable } from '@angular/core/rxjs-interop';
 
-import {ProductApiService} from '../../../../core/api/product-api.service';
-import {Product} from '../../../../models/product.model';
-import {ConfirmationDialog} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
-import {BusinessContextService} from '../../../../core/services/business-context.service';
-import {BusinessContextHeader} from '../../../../shared/components/business-context-header/business-context-header';
+import { ProductApiService } from '../../../../core/api/product-api.service';
+import { Product } from '../../../../models/product.model';
+import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import { BusinessContextService } from '../../../../core/services/business-context.service';
+import { BusinessContextHeader } from '../../../../shared/components/business-context-header/business-context-header';
 
 @Component({
   selector: 'app-product-management',
-  imports: [
-    ReactiveFormsModule,
-    RouterLink,
-    ConfirmationDialog,
-    BusinessContextHeader,
-  ],
+  imports: [ReactiveFormsModule, RouterLink, ConfirmationDialog, BusinessContextHeader],
   templateUrl: './product-management.html',
   styleUrl: './product-management.scss',
 })
@@ -55,6 +50,7 @@ export class ProductManagement implements OnInit {
       validators: [Validators.required],
     }),
     description: new FormControl<string | null>(null),
+    imageUrl: new FormControl<string | null>(null),
     sku: new FormControl<string | null>(null),
     sellingPrice: new FormControl(0, {
       nonNullable: true,
@@ -72,6 +68,7 @@ export class ProductManagement implements OnInit {
     this.productForm.setValue({
       name: product.name,
       description: product.description,
+      imageUrl: product.imageUrl,
       sku: product.sku,
       sellingPrice: product.sellingPrice,
       category: product.category,
@@ -143,6 +140,12 @@ export class ProductManagement implements OnInit {
   cancelEdit(): void {
     this.editingProductId.set(null);
     this.resetProductForm();
+  }
+
+  onProductImageError(event: Event): void {
+    const image = event.target as HTMLImageElement;
+    image.hidden = true;
+    image.parentElement?.classList.add('image-unavailable');
   }
 
   submitProduct(): void {
@@ -224,6 +227,7 @@ export class ProductManagement implements OnInit {
     this.productForm.reset({
       name: '',
       description: null,
+      imageUrl: null,
       sku: null,
       sellingPrice: 0,
       category: null,

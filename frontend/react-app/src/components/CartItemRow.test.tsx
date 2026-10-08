@@ -10,6 +10,7 @@ const item: CartItem = {
     businessId: "business-1",
     name: "Gaming Mouse",
     description: "Wireless gaming mouse",
+    imageUrl: null,
     sku: "MOUSE-001",
     sellingPrice: 39.99,
     category: "Gaming",

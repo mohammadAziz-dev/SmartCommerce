@@ -74,6 +74,7 @@ describe('ProductManagement', () => {
     component.productForm.setValue({
       name: 'USB-C Hub',
       description: '7-in-1 USB-C Hub',
+      imageUrl: null,
       sku: 'HUB-001',
       sellingPrice: 49.99,
       category: 'Accessories',
@@ -85,6 +86,7 @@ describe('ProductManagement', () => {
     expect(productApiMock.createProduct).toHaveBeenCalledWith('business-123', {
       name: 'USB-C Hub',
       description: '7-in-1 USB-C Hub',
+      imageUrl: null,
       sku: 'HUB-001',
       sellingPrice: 49.99,
       category: 'Accessories',
@@ -101,6 +103,7 @@ describe('ProductManagement', () => {
       businessId: 'business-123',
       name: 'USB-C Hub',
       description: 'Old description',
+      imageUrl: null,
       sku: 'HUB-001',
       sellingPrice: 49.99,
       category: 'Accessories',
@@ -129,6 +132,7 @@ describe('ProductManagement', () => {
     expect(productApiMock.updateProduct).toHaveBeenCalledWith('business-123', 'product-123', {
       name: 'Premium USB-C Hub',
       description: 'Old description',
+      imageUrl: null,
       sku: 'HUB-001',
       sellingPrice: 59.99,
       category: 'Accessories',
@@ -146,6 +150,7 @@ describe('ProductManagement', () => {
       businessId: 'business-123',
       name: 'USB-C Hub',
       description: '7-in-1 USB-C Hub',
+      imageUrl: null,
       sku: 'HUB-001',
       sellingPrice: 49.99,
       category: 'Accessories',
@@ -185,6 +190,7 @@ describe('ProductManagement', () => {
     component.productForm.setValue({
       name: 'USB-C Hub',
       description: null,
+      imageUrl: null,
       sku: null,
       sellingPrice: 49.99,
       category: null,
@@ -212,6 +218,7 @@ describe('ProductManagement', () => {
       businessId: 'business-123',
       name: 'USB-C Hub',
       description: null,
+      imageUrl: null,
       sku: null,
       sellingPrice: 49.99,
       category: null,
@@ -233,6 +240,7 @@ describe('ProductManagement', () => {
       businessId: 'business-123',
       name: 'USB-C Hub',
       description: null,
+      imageUrl: null,
       sku: null,
       sellingPrice: 49.99,
       category: null,
@@ -253,5 +261,16 @@ describe('ProductManagement', () => {
 
     expect(component.productPendingDeactivation()).toBeNull();
     expect(productApiMock.deactivateProduct).toHaveBeenCalledWith('business-123', 'product-123');
+  });
+
+  it('should hide a broken product image and show fallback', () => {
+    const container = document.createElement('div');
+    const image = document.createElement('img');
+    container.appendChild(image);
+
+    component.onProductImageError({target: image} as unknown as Event);
+
+    expect(image.hidden).toBe(true);
+    expect(container.classList.contains('image-unavailable')).toBe(true);
   });
 });

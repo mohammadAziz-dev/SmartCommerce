@@ -16,6 +16,7 @@ class InventoryTest {
             business,
             "Test Product",
             "Test Description",
+            null,
             "SKU-001",
             BigDecimal.valueOf(10),
             "Test Category",

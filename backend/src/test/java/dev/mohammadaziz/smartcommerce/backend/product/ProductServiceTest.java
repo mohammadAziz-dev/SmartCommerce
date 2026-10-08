@@ -41,6 +41,7 @@ class ProductServiceTest {
         CreateProductRequest request = new CreateProductRequest(
                 "Wireless Mouse",
                 "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -54,6 +55,7 @@ class ProductServiceTest {
                 business,
                 request.name(),
                 request.description(),
+                request.imageUrl(),
                 request.sku(),
                 request.sellingPrice(),
                 request.category(),
@@ -66,6 +68,10 @@ class ProductServiceTest {
         ProductResponse response = productService.createProduct(businessId, request);
 
         assertEquals("Wireless Mouse", response.name());
+        assertEquals(
+                "https://example.com/mouse.jpg",
+                response.imageUrl()
+        );
         assertEquals(new BigDecimal("29.99"), response.sellingPrice());
         assertTrue(response.active());
 
@@ -79,6 +85,7 @@ class ProductServiceTest {
 
         CreateProductRequest request = new CreateProductRequest(
                 "Wireless Mouse",
+                null,
                 null,
                 null,
                 new BigDecimal("29.99"),
@@ -105,7 +112,8 @@ class ProductServiceTest {
         Product mouse = new Product(
                 business,
                 "Wireless Mouse",
-                null,
+                "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -120,6 +128,7 @@ class ProductServiceTest {
 
         assertEquals(1, products.size());
         assertEquals("Wireless Mouse", products.getFirst().name());
+        assertEquals("https://example.com/mouse.jpg", products.getFirst().imageUrl());
 
         verify(productRepository).findAllByBusinessId(businessId);
     }
@@ -134,6 +143,7 @@ class ProductServiceTest {
         Product mouse = new Product(
                 businessA,
                 "Wireless Mouse",
+                null,
                 null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),
@@ -164,6 +174,7 @@ class ProductServiceTest {
         Product mouse = new Product(
                 business,
                 "Wireless Mouse",
+                null,
                 null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),
@@ -212,7 +223,8 @@ class ProductServiceTest {
         Product existingProduct = new Product(
                 business,
                 "Wireless Mouse",
-                "Old description",
+                "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -222,6 +234,7 @@ class ProductServiceTest {
         UpdateProductRequest request = new UpdateProductRequest(
                 "Gaming Mouse",
                 "Updated description",
+                "https://example.com/updated-mouse.jpg",
                 "MOUSE-002",
                 new BigDecimal("39.99"),
                 "Gaming",
@@ -239,6 +252,7 @@ class ProductServiceTest {
 
         assertEquals("Gaming Mouse", response.name());
         assertEquals("Updated description", response.description());
+        assertEquals("https://example.com/updated-mouse.jpg", response.imageUrl());
         assertEquals("MOUSE-002", response.sku());
         assertEquals(new BigDecimal("39.99"), response.sellingPrice());
         assertEquals("Gaming", response.category());
@@ -258,6 +272,7 @@ class ProductServiceTest {
         UpdateProductRequest request = new UpdateProductRequest(
                 "Gaming Mouse",
                 "Updated description",
+                null,
                 "MOUSE-002",
                 new BigDecimal("39.99"),
                 "Gaming",
@@ -288,7 +303,8 @@ class ProductServiceTest {
         Product product = new Product(
                 business,
                 "Wireless Mouse",
-                null,
+                "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",

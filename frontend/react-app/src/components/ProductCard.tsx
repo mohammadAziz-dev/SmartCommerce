@@ -11,6 +11,20 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <article className="product-card">
+      <div className="product-card__image">
+        <span className="product-card__image-fallback">No image available</span>
+
+        {product.imageUrl && (
+          <img
+            src={product.imageUrl}
+            alt={product.name}
+            loading="lazy"
+            onError={(event) => {
+              event.currentTarget.hidden = true;
+            }}
+          />
+        )}
+      </div>
       <button type="button" onClick={() => addItem(product)}>
         Add to cart
       </button>

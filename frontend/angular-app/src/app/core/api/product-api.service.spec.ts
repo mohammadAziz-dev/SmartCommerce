@@ -1,8 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import {
-  HttpTestingController,
-  provideHttpClientTesting,
-} from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { provideHttpClient } from '@angular/common/http';
 
 import { ProductApiService } from './product-api.service';
@@ -19,6 +16,7 @@ describe('ProductApiService', () => {
     businessId,
     name: 'Gaming Mouse',
     description: 'Wireless gaming mouse',
+    imageUrl: null,
     sku: 'MOUSE-001',
     sellingPrice: 39.99,
     category: 'Gaming',
@@ -27,11 +25,7 @@ describe('ProductApiService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        ProductApiService,
-        provideHttpClient(),
-        provideHttpClientTesting(),
-      ],
+      providers: [ProductApiService, provideHttpClient(), provideHttpClientTesting()],
     });
 
     service = TestBed.inject(ProductApiService);
@@ -47,9 +41,7 @@ describe('ProductApiService', () => {
       expect(products).toEqual([product]);
     });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/products`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/products`);
 
     expect(request.request.method).toBe('GET');
 
@@ -60,21 +52,18 @@ describe('ProductApiService', () => {
     const productRequest: ProductRequest = {
       name: 'Gaming Mouse',
       description: 'Wireless gaming mouse',
+      imageUrl: null,
       sku: 'MOUSE-001',
       sellingPrice: 39.99,
       category: 'Gaming',
       active: true,
     };
 
-    service
-      .createProduct(businessId, productRequest)
-      .subscribe((createdProduct) => {
-        expect(createdProduct).toEqual(product);
-      });
+    service.createProduct(businessId, productRequest).subscribe((createdProduct) => {
+      expect(createdProduct).toEqual(product);
+    });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/products`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/products`);
 
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(productRequest);
@@ -87,9 +76,7 @@ describe('ProductApiService', () => {
       expect(result).toEqual(product);
     });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/products/${product.id}`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/products/${product.id}`);
 
     expect(request.request.method).toBe('GET');
 
@@ -100,6 +87,7 @@ describe('ProductApiService', () => {
     const productRequest: ProductRequest = {
       name: 'Updated Gaming Mouse',
       description: 'Updated description',
+      imageUrl: null,
       sku: 'MOUSE-001',
       sellingPrice: 49.99,
       category: 'Gaming',
@@ -111,15 +99,11 @@ describe('ProductApiService', () => {
       ...productRequest,
     };
 
-    service
-      .updateProduct(businessId, product.id, productRequest)
-      .subscribe((result) => {
-        expect(result).toEqual(updatedProduct);
-      });
+    service.updateProduct(businessId, product.id, productRequest).subscribe((result) => {
+      expect(result).toEqual(updatedProduct);
+    });
 
-    const request = httpTesting.expectOne(
-      `/api/businesses/${businessId}/products/${product.id}`,
-    );
+    const request = httpTesting.expectOne(`/api/businesses/${businessId}/products/${product.id}`);
 
     expect(request.request.method).toBe('PUT');
     expect(request.request.body).toEqual(productRequest);
@@ -133,11 +117,9 @@ describe('ProductApiService', () => {
       active: false,
     };
 
-    service
-      .deactivateProduct(businessId, product.id)
-      .subscribe((result) => {
-        expect(result).toEqual(deactivatedProduct);
-      });
+    service.deactivateProduct(businessId, product.id).subscribe((result) => {
+      expect(result).toEqual(deactivatedProduct);
+    });
 
     const request = httpTesting.expectOne(
       `/api/businesses/${businessId}/products/${product.id}/deactivate`,

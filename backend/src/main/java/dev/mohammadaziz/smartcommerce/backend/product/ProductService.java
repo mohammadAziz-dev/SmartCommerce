@@ -33,6 +33,7 @@ public class ProductService {
                 business,
                 request.name(),
                 request.description(),
+                request.imageUrl(),
                 request.sku(),
                 request.sellingPrice(),
                 request.category(),
@@ -57,6 +58,7 @@ public class ProductService {
                 product.getBusiness().getId(),
                 product.getName(),
                 product.getDescription(),
+                product.getImageUrl(),
                 product.getSku(),
                 product.getSellingPrice(),
                 product.getCategory(),
@@ -84,6 +86,7 @@ public class ProductService {
         product.update(
                 request.name(),
                 request.description(),
+                request.imageUrl(),
                 request.sku(),
                 request.sellingPrice(),
                 request.category(),
