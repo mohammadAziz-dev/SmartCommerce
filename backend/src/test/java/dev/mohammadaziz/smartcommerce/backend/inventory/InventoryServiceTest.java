@@ -54,6 +54,7 @@ class InventoryServiceTest {
                 business,
                 "Wireless Mouse",
                 null,
+                null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -193,6 +194,7 @@ class InventoryServiceTest {
                 business,
                 "Wireless Mouse",
                 null,
+                null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -248,6 +250,7 @@ class InventoryServiceTest {
         Product product = new Product(
                 business,
                 "Wireless Mouse",
+                null,
                 null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),

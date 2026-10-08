@@ -8,6 +8,7 @@ public record ProductResponse(
         UUID businessId,
         String name,
         String description,
+        String imageUrl,
         String sku,
         BigDecimal sellingPrice,
         String category,

@@ -38,6 +38,7 @@ public class ProductControllerTest {
                 businessId,
                 "Wireless Mouse",
                 null,
+                null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -52,6 +53,7 @@ public class ProductControllerTest {
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].name").value("Wireless Mouse"))
+                .andExpect(jsonPath("$[0].imageUrl").value((Object) null))
                 .andExpect(jsonPath("$[0].sku").value("MOUSE-001"))
                 .andExpect(jsonPath("$[0].sellingPrice").value(29.99))
                 .andExpect(jsonPath("$[0].active").value(true));
@@ -67,6 +69,7 @@ public class ProductControllerTest {
                 businessId,
                 "Wireless Mouse",
                 "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -87,6 +90,7 @@ public class ProductControllerTest {
                 .andExpect(jsonPath("$.id").value(productId.toString()))
                 .andExpect(jsonPath("$.businessId").value(businessId.toString()))
                 .andExpect(jsonPath("$.name").value("Wireless Mouse"))
+                .andExpect(jsonPath("$.imageUrl").value("https://example.com/mouse.jpg"))
                 .andExpect(jsonPath("$.sku").value("MOUSE-001"))
                 .andExpect(jsonPath("$.sellingPrice").value(29.99))
                 .andExpect(jsonPath("$.active").value(true));
@@ -120,6 +124,7 @@ public class ProductControllerTest {
                 businessId,
                 "Wireless Mouse",
                 "Wireless ergonomic mouse",
+                "https://example.com/mouse.jpg",
                 "MOUSE-001",
                 new BigDecimal("29.99"),
                 "Electronics",
@@ -135,20 +140,21 @@ public class ProductControllerTest {
                         post("/api/businesses/{businessId}/products", businessId)
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "Wireless Mouse",
-                                      "description": "Wireless ergonomic mouse",
-                                      "sku": "MOUSE-001",
-                                      "sellingPrice": 29.99,
-                                      "category": "Electronics",
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "Wireless Mouse",
+                                          "description": "Wireless ergonomic mouse",
+                                          "sku": "MOUSE-001",
+                                          "sellingPrice": 29.99,
+                                          "category": "Electronics",
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").value(productId.toString()))
                 .andExpect(jsonPath("$.businessId").value(businessId.toString()))
                 .andExpect(jsonPath("$.name").value("Wireless Mouse"))
+                .andExpect(jsonPath("$.imageUrl").value("https://example.com/mouse.jpg"))
                 .andExpect(jsonPath("$.sellingPrice").value(29.99))
                 .andExpect(jsonPath("$.active").value(true));
     }
@@ -161,15 +167,15 @@ public class ProductControllerTest {
                         post("/api/businesses/{businessId}/products", businessId)
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "",
-                                      "description": "Wireless ergonomic mouse",
-                                      "sku": "MOUSE-001",
-                                      "sellingPrice": 29.99,
-                                      "category": "Electronics",
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "",
+                                          "description": "Wireless ergonomic mouse",
+                                          "sku": "MOUSE-001",
+                                          "sellingPrice": 29.99,
+                                          "category": "Electronics",
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isBadRequest());
 
@@ -185,15 +191,15 @@ public class ProductControllerTest {
                         post("/api/businesses/{businessId}/products", businessId)
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "Wireless Mouse",
-                                      "description": "Wireless ergonomic mouse",
-                                      "sku": "MOUSE-001",
-                                      "sellingPrice": -10.00,
-                                      "category": "Electronics",
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "Wireless Mouse",
+                                          "description": "Wireless ergonomic mouse",
+                                          "sku": "MOUSE-001",
+                                          "sellingPrice": -10.00,
+                                          "category": "Electronics",
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isBadRequest());
 
@@ -211,6 +217,7 @@ public class ProductControllerTest {
                 businessId,
                 "Gaming Mouse",
                 "Updated description",
+                "https://example.com/gaming-mouse.jpg",
                 "MOUSE-002",
                 new BigDecimal("39.99"),
                 "Gaming",
@@ -231,20 +238,21 @@ public class ProductControllerTest {
                         )
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "Gaming Mouse",
-                                      "description": "Updated description",
-                                      "sku": "MOUSE-002",
-                                      "sellingPrice": 39.99,
-                                      "category": "Gaming",
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "Gaming Mouse",
+                                          "description": "Updated description",
+                                          "sku": "MOUSE-002",
+                                          "sellingPrice": 39.99,
+                                          "category": "Gaming",
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(productId.toString()))
                 .andExpect(jsonPath("$.businessId").value(businessId.toString()))
                 .andExpect(jsonPath("$.name").value("Gaming Mouse"))
+                .andExpect(jsonPath("$.imageUrl").value("https://example.com/gaming-mouse.jpg"))
                 .andExpect(jsonPath("$.sku").value("MOUSE-002"))
                 .andExpect(jsonPath("$.sellingPrice").value(39.99))
                 .andExpect(jsonPath("$.category").value("Gaming"))
@@ -270,12 +278,12 @@ public class ProductControllerTest {
                         )
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "Gaming Mouse",
-                                      "sellingPrice": 39.99,
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "Gaming Mouse",
+                                          "sellingPrice": 39.99,
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isNotFound());
     }
@@ -293,12 +301,12 @@ public class ProductControllerTest {
                         )
                                 .contentType("application/json")
                                 .content("""
-                                    {
-                                      "name": "",
-                                      "sellingPrice": -10.00,
-                                      "active": true
-                                    }
-                                    """)
+                                        {
+                                          "name": "",
+                                          "sellingPrice": -10.00,
+                                          "active": true
+                                        }
+                                        """)
                 )
                 .andExpect(status().isBadRequest());
 
@@ -319,6 +327,7 @@ public class ProductControllerTest {
                 productId,
                 businessId,
                 "Wireless Mouse",
+                null,
                 null,
                 "MOUSE-001",
                 new BigDecimal("29.99"),

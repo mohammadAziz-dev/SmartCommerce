@@ -12,7 +12,7 @@ public record UpdateProductRequest(
         String name,
 
         String description,
-
+        String imageUrl,
         String sku,
 
         @NotNull(message = "Selling price is required")

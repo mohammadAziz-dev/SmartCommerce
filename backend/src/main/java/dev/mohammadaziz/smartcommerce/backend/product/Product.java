@@ -26,6 +26,7 @@ public class Product {
 
     private String description;
     private String sku;
+    private String imageUrl;
 
     @Column(nullable = false)
     private BigDecimal sellingPrice;
@@ -37,6 +38,7 @@ public class Product {
             Business business,
             String name,
             String description,
+            String imageUrl,
             String sku,
             BigDecimal sellingPrice,
             String category,
@@ -45,6 +47,7 @@ public class Product {
         this.business = business;
         this.name = name;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.sku = sku;
         this.sellingPrice = sellingPrice;
         this.category = category;
@@ -54,6 +57,7 @@ public class Product {
     public void update(
             String name,
             String description,
+            String imageUrl,
             String sku,
             BigDecimal sellingPrice,
             String category,
@@ -61,6 +65,7 @@ public class Product {
     ) {
         this.name = name;
         this.description = description;
+        this.imageUrl = imageUrl;
         this.sku = sku;
         this.sellingPrice = sellingPrice;
         this.category = category;
