@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -80,5 +81,23 @@ class BusinessControllerTest {
 
         mockMvc.perform(get("/api/businesses/{id}", id))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void shouldReturnAllBusinesses() throws Exception {
+        UUID firstId = UUID.randomUUID();
+        UUID secondId = UUID.randomUUID();
+
+        when(businessService.getBusinesses()).thenReturn(List.of(
+                new BusinessResponse(firstId, "SmartOffice Store"),
+                new BusinessResponse(secondId, "Aziz Electronics")
+        ));
+
+        mockMvc.perform(get("/api/businesses"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(firstId.toString()))
+                .andExpect(jsonPath("$[0].name").value("SmartOffice Store"))
+                .andExpect(jsonPath("$[1].id").value(secondId.toString()))
+                .andExpect(jsonPath("$[1].name").value("Aziz Electronics"));
     }
 }

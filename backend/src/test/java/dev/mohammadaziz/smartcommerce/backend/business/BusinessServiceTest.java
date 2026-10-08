@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,5 +72,22 @@ class BusinessServiceTest {
         );
 
         verify(businessRepository).findById(id);
+    }
+
+    @Test
+    void shouldReturnAllBusinesses() {
+        Business first = new Business("SmartOffice Store");
+        Business second = new Business("Aziz Electronics");
+
+        when(businessRepository.findAll())
+                .thenReturn(List.of(first, second));
+
+        List<BusinessResponse> responses = businessService.getBusinesses();
+
+        assertEquals(2, responses.size());
+        assertEquals("SmartOffice Store", responses.get(0).name());
+        assertEquals("Aziz Electronics", responses.get(1).name());
+
+        verify(businessRepository).findAll();
     }
 }

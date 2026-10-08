@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -219,6 +220,26 @@ class InventoryServiceTest {
 
         verify(inventoryRepository, never())
                 .save(any(Inventory.class));
+    }
+
+    @Test
+    void shouldGetAllInventoriesForBusiness() {
+        UUID businessId = UUID.randomUUID();
+
+        Inventory firstInventory = createInventory();
+        Inventory secondInventory = createInventory();
+
+        when(inventoryRepository.findAllByBusinessId(businessId))
+                .thenReturn(List.of(firstInventory, secondInventory));
+
+        List<InventoryResponse> responses =
+                inventoryService.getInventories(businessId);
+
+        assertEquals(2, responses.size());
+        assertEquals(20, responses.get(0).quantity());
+        assertEquals(20, responses.get(1).quantity());
+
+        verify(inventoryRepository).findAllByBusinessId(businessId);
     }
 
     private Inventory createInventory() {

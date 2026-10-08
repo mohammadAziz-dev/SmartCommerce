@@ -12,6 +12,7 @@ import dev.mohammadaziz.smartcommerce.backend.product.ProductRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.context.ApplicationEventPublisher;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -105,6 +106,13 @@ public class InventoryService {
             UUID productId
     ) {
         return toResponse(getInventory(businessId, productId));
+    }
+
+    public List<InventoryResponse> getInventories(UUID businessId) {
+        return inventoryRepository.findAllByBusinessId(businessId)
+                .stream()
+                .map(this::toResponse)
+                .toList();
     }
 
     private Inventory getInventory(

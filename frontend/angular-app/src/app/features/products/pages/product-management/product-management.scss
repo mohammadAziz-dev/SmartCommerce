@@ -22,8 +22,7 @@
   }
 }
 
-.page-eyebrow,
-.section-eyebrow {
+.page-eyebrow {
   margin: 0;
   font-size: 0.75rem;
   font-weight: 700;
@@ -33,9 +32,7 @@
 }
 
 .page-description,
-.section-header p,
-.inventory-header p,
-.create-inventory > p {
+.section-header p {
   margin: 0;
   color: #6b7280;
   line-height: 1.5;
@@ -68,7 +65,6 @@
 }
 
 
-
 .form-field-wide {
   grid-column: 1 / -1;
 }
@@ -89,7 +85,6 @@
     height: 1rem;
   }
 }
-
 
 
 /* ---------- Products ---------- */
@@ -126,9 +121,8 @@
   border-radius: 0.875rem;
   background: #ffffff;
   box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
-  transition:
-    box-shadow 0.2s ease,
-    transform 0.2s ease;
+  transition: box-shadow 0.2s ease,
+  transform 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
@@ -199,83 +193,6 @@
   margin-top: auto;
 }
 
-
-
-/* ---------- Inventory ---------- */
-
-.inventory-management {
-  margin-bottom: 2rem;
-}
-
-.inventory-header {
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.inventory-summary {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-}
-
-.inventory-stat {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.4rem;
-  min-height: 5rem;
-  padding: 1rem;
-  border-radius: 0.75rem;
-  background: #f9fafb;
-
-  strong {
-    font-size: 1.4rem;
-    color: #111827;
-  }
-}
-
-.stat-label {
-  font-size: 0.8rem;
-  color: #6b7280;
-}
-
-.stock-adjustment,
-.create-inventory {
-  padding-top: 0.5rem;
-
-  h3 {
-    margin: 0 0 1rem;
-    color: #111827;
-  }
-}
-
-.stock-form,
-.inventory-form {
-  display: flex;
-  align-items: flex-end;
-  flex-wrap: wrap;
-  gap: 1rem;
-
-  .form-field {
-    min-width: 180px;
-  }
-}
-
-.inline-error {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid #fecaca;
-  border-radius: 0.5rem;
-  background: #fef2f2;
-}
-
-.inventory-empty {
-  max-width: 700px;
-}
-
-
-
 /* ---------- Responsive ---------- */
 
 @media (max-width: 768px) {
@@ -291,22 +208,8 @@
     grid-column: auto;
   }
 
-  .inventory-summary {
-    grid-template-columns: 1fr;
-  }
-
   .section-header {
     flex-direction: column;
-  }
-
-  .stock-form,
-  .inventory-form {
-    align-items: stretch;
-    flex-direction: column;
-
-    .form-field {
-      width: 100%;
-    }
   }
 }
 

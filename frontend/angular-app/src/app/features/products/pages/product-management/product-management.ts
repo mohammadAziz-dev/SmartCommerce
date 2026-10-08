@@ -8,53 +8,44 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { HttpErrorResponse } from '@angular/common/http';
-import { ActivatedRoute } from '@angular/router';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {RouterLink} from '@angular/router';
+import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {switchMap, of, catchError, tap, finalize} from 'rxjs';
+import {toObservable} from '@angular/core/rxjs-interop';
 
-import { ProductApiService } from '../../../../core/api/product-api.service';
-import { Product } from '../../../../models/product.model';
-import { InventoryApiService } from '../../../../core/api/inventory-api.service';
-import { Inventory } from '../../../../models/inventory.model';
-import { ConfirmationDialog } from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {ProductApiService} from '../../../../core/api/product-api.service';
+import {Product} from '../../../../models/product.model';
+import {ConfirmationDialog} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
+import {BusinessContextHeader} from '../../../../shared/components/business-context-header/business-context-header';
 
 @Component({
   selector: 'app-product-management',
-  imports: [ReactiveFormsModule, ConfirmationDialog],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    ConfirmationDialog,
+    BusinessContextHeader,
+  ],
   templateUrl: './product-management.html',
   styleUrl: './product-management.scss',
 })
 export class ProductManagement implements OnInit {
   private readonly productApi = inject(ProductApiService);
-  private readonly inventoryApi = inject(InventoryApiService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly route = inject(ActivatedRoute);
-  private inventoryEventSource: EventSource | null = null;
+  private readonly businessContext = inject(BusinessContextService);
   private readonly productFormSection = viewChild<ElementRef<HTMLElement>>('productFormSection');
-  private readonly inventorySection = viewChild<ElementRef<HTMLElement>>('inventorySection');
 
   readonly products = signal<Product[]>([]);
   readonly loading = signal(false);
   readonly productLoadError = signal<string | null>(null);
   readonly productActionError = signal<string | null>(null);
   readonly saving = signal(false);
-  readonly businessId = signal<string | null>(null);
+  readonly businessId = this.businessContext.businessId;
+  private readonly businessId$ = toObservable(this.businessId);
   readonly editingProductId = signal<string | null>(null);
-  readonly selectedProductId = signal<string | null>(null);
-  readonly inventory = signal<Inventory | null>(null);
-  readonly inventoryLoading = signal(false);
-  readonly inventoryError = signal<string | null>(null);
-  readonly inventoryNotFound = signal(false);
   readonly productPendingDeactivation = signal<Product | null>(null);
-  readonly pendingStockDecrease = signal<number | null>(null);
-
-  readonly selectedProduct = computed(() => {
-    const productId = this.selectedProductId();
-
-    return this.products().find((product) => product.id === productId) ?? null;
-  });
 
   readonly isEditing = computed(() => this.editingProductId() !== null);
 
@@ -75,28 +66,6 @@ export class ProductManagement implements OnInit {
     }),
   });
 
-  readonly inventoryForm = new FormGroup({
-    quantity: new FormControl(0, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0)],
-    }),
-    lowStockThreshold: new FormControl(5, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(0)],
-    }),
-  });
-
-  readonly inventorySaving = signal(false);
-
-  readonly stockAdjustmentForm = new FormGroup({
-    amount: new FormControl(1, {
-      nonNullable: true,
-      validators: [Validators.required, Validators.min(1)],
-    }),
-  });
-
-  readonly adjustingStock = signal(false);
-
   editProduct(product: Product): void {
     this.editingProductId.set(product.id);
 
@@ -113,84 +82,6 @@ export class ProductManagement implements OnInit {
       behavior: 'smooth',
       block: 'start',
     });
-  }
-
-  private adjustStock(operation: 'increase' | 'decrease'): void {
-    const businessId = this.businessId();
-    const productId = this.selectedProductId();
-
-    if (!businessId || !productId) {
-      this.inventoryError.set('Business or Product ID is missing.');
-      return;
-    }
-
-    if (this.stockAdjustmentForm.invalid) {
-      this.stockAdjustmentForm.markAllAsTouched();
-      return;
-    }
-
-    const request = this.stockAdjustmentForm.getRawValue();
-
-    this.adjustingStock.set(true);
-    this.inventoryError.set(null);
-
-    const request$ =
-      operation === 'increase'
-        ? this.inventoryApi.increaseStock(businessId, productId, request)
-        : this.inventoryApi.decreaseStock(businessId, productId, request);
-
-    request$
-      .pipe(
-        finalize(() => this.adjustingStock.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (updatedInventory) => {
-          this.inventory.set(updatedInventory);
-
-          this.stockAdjustmentForm.reset({
-            amount: 1,
-          });
-        },
-        error: (error: HttpErrorResponse) => {
-          if (operation === 'decrease' && error.status === 400) {
-            this.inventoryError.set('Not enough stock available.');
-          } else {
-            this.inventoryError.set(`Could not ${operation} stock. Please try again.`);
-          }
-        },
-      });
-  }
-
-  increaseStock(): void {
-    this.adjustStock('increase');
-  }
-
-  decreaseStock(): void {
-    this.adjustStock('decrease');
-  }
-
-  requestStockDecrease(): void {
-    if (this.stockAdjustmentForm.invalid) {
-      this.stockAdjustmentForm.markAllAsTouched();
-      return;
-    }
-
-    const amount = this.stockAdjustmentForm.getRawValue().amount;
-    this.pendingStockDecrease.set(amount);
-  }
-
-  cancelStockDecrease(): void {
-    this.pendingStockDecrease.set(null);
-  }
-
-  confirmStockDecrease(): void {
-    if (this.pendingStockDecrease() === null) {
-      return;
-    }
-
-    this.pendingStockDecrease.set(null);
-    this.decreaseStock();
   }
 
   createProduct(): void {
@@ -329,23 +220,6 @@ export class ProductManagement implements OnInit {
       });
   }
 
-  selectProduct(productId: string): void {
-    const businessId = this.businessId();
-
-    if (!businessId) {
-      this.inventoryError.set('Business ID is missing.');
-      return;
-    }
-
-    this.selectedProductId.set(productId);
-    this.loadInventory(businessId, productId);
-
-    this.inventorySection()?.nativeElement.scrollIntoView?.({
-      behavior: 'smooth',
-      block: 'start',
-    });
-  }
-
   private resetProductForm(): void {
     this.productForm.reset({
       name: '',
@@ -355,75 +229,6 @@ export class ProductManagement implements OnInit {
       category: null,
       active: true,
     });
-  }
-
-  private loadInventory(businessId: string, productId: string): void {
-    this.inventoryNotFound.set(false);
-    this.inventoryLoading.set(true);
-    this.inventoryError.set(null);
-    this.inventory.set(null);
-
-    this.inventoryApi
-      .getInventory(businessId, productId)
-      .pipe(
-        finalize(() => this.inventoryLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (inventory) => {
-          this.inventory.set(inventory);
-        },
-        error: (error: HttpErrorResponse) => {
-          if (error.status === 404) {
-            this.inventoryNotFound.set(true);
-            this.inventoryError.set('No inventory found for this product.');
-          } else {
-            this.inventoryError.set('Could not load inventory. Please try again.');
-          }
-        },
-      });
-  }
-
-  createInventory(): void {
-    const businessId = this.businessId();
-    const productId = this.selectedProductId();
-
-    if (!businessId || !productId) {
-      this.inventoryError.set('Business or Product ID is missing.');
-      return;
-    }
-
-    if (this.inventoryForm.invalid) {
-      this.inventoryForm.markAllAsTouched();
-      return;
-    }
-
-    this.inventorySaving.set(true);
-    this.inventoryError.set(null);
-
-    const formValue = this.inventoryForm.getRawValue();
-
-    const request = {
-      productId,
-      quantity: formValue.quantity,
-      lowStockThreshold: formValue.lowStockThreshold,
-    };
-
-    this.inventoryApi
-      .createInventory(businessId, request)
-      .pipe(
-        finalize(() => this.inventorySaving.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe({
-        next: (createdInventory) => {
-          this.inventory.set(createdInventory);
-          this.inventoryNotFound.set(false);
-        },
-        error: () => {
-          this.inventoryError.set('Could not create inventory.');
-        },
-      });
   }
 
   requestProductDeactivation(product: Product): void {
@@ -445,41 +250,36 @@ export class ProductManagement implements OnInit {
     this.deactivateProduct(product.id);
   }
 
-  private subscribeToInventoryChanges(businessId: string): void {
-    this.inventoryEventSource = this.inventoryApi.subscribeToInventoryChanges(
-      businessId,
-      (event) => {
-        const currentInventory = this.inventory();
-
-        if (currentInventory && currentInventory.productId === event.productId) {
-          this.inventory.update((inventory) =>
-            inventory
-              ? {
-                  ...inventory,
-                  quantity: event.quantity,
-                  lowStock: event.quantity <= inventory.lowStockThreshold,
-                }
-              : inventory,
-          );
-        }
-      },
-    );
-
-    this.destroyRef.onDestroy(() => {
-      this.inventoryEventSource?.close();
-    });
-  }
-
   ngOnInit(): void {
-    const businessId = this.route.snapshot.queryParamMap.get('businessId');
+    this.businessId$
+      .pipe(
+        tap(() => {
+          this.products.set([]);
+          this.productLoadError.set(null);
+          this.productActionError.set(null);
+          this.productPendingDeactivation.set(null);
+          this.cancelEdit();
+        }),
+        switchMap((businessId) => {
+          if (!businessId) {
+            this.loading.set(false);
+            return of([]);
+          }
 
-    if (!businessId) {
-      this.productLoadError.set('Business ID is missing.');
-      return;
-    }
+          this.loading.set(true);
 
-    this.businessId.set(businessId);
-    this.loadProducts(businessId);
-    this.subscribeToInventoryChanges(businessId);
+          return this.productApi.getProducts(businessId).pipe(
+            catchError(() => {
+              this.productLoadError.set('Could not load products.');
+              return of([]);
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((products) => {
+        this.products.set(products);
+        this.loading.set(false);
+      });
   }
 }

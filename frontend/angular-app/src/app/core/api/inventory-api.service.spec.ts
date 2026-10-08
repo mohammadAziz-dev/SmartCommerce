@@ -1,8 +1,8 @@
-import { TestBed } from '@angular/core/testing';
-import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
-import { provideHttpClient } from '@angular/common/http';
+import {TestBed} from '@angular/core/testing';
+import {HttpTestingController, provideHttpClientTesting} from '@angular/common/http/testing';
+import {provideHttpClient} from '@angular/common/http';
 
-import { InventoryApiService } from './inventory-api.service';
+import {InventoryApiService} from './inventory-api.service';
 import {
   CreateInventoryRequest,
   Inventory,
@@ -55,6 +55,20 @@ describe('InventoryApiService', () => {
     expect(request.request.body).toEqual(requestBody);
 
     request.flush(inventory);
+  });
+
+  it('should load inventories for a business', () => {
+    service.getInventories(businessId).subscribe((result) => {
+      expect(result).toEqual([inventory]);
+    });
+
+    const request = httpTesting.expectOne(
+      `/api/businesses/${businessId}/inventory`,
+    );
+
+    expect(request.request.method).toBe('GET');
+
+    request.flush([inventory]);
   });
 
   it('should load inventory for a product', () => {
@@ -124,7 +138,8 @@ describe('InventoryApiService', () => {
       constructor(
         public url: string,
         public eventSourceInitDict?: EventSourceInit,
-      ) {}
+      ) {
+      }
 
       addEventListener(type: string, listener: EventListener): void {
         if (type === 'inventory-changed') {

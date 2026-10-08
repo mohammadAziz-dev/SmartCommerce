@@ -4,23 +4,45 @@
   </header>
 
   <div class="admin-content">
+
     <nav class="admin-nav" aria-label="Admin navigation">
       <a
         routerLink="/dashboard"
         routerLinkActive="active"
         [routerLinkActiveOptions]="{ exact: true }"
+        queryParamsHandling="preserve"
       >
         Dashboard
       </a>
 
-      <span>Products</span>
-      <span>Inventory</span>
-      <span>Suppliers</span>
-      <span>Orders</span>
+      <a
+        routerLink="/products"
+        routerLinkActive="active"
+        queryParamsHandling="preserve"
+      >
+        Products
+      </a>
+
+      <a
+        routerLink="/inventory"
+        routerLinkActive="active"
+        queryParamsHandling="preserve"
+      >
+        Inventory
+      </a>
+
+      <a
+        routerLink="/orders"
+        routerLinkActive="active"
+        queryParamsHandling="preserve"
+      >
+        Orders
+      </a>
     </nav>
 
+
     <main class="admin-main">
-      <router-outlet />
+      <router-outlet/>
     </main>
   </div>
 </div>

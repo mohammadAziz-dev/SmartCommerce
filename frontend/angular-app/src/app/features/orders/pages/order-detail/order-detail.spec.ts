@@ -1,40 +1,36 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, provideRouter } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {ActivatedRoute, convertToParamMap, provideRouter} from '@angular/router';
+import {BehaviorSubject, of, throwError} from 'rxjs';
 
-import { OrderApiService } from '../../../../core/api/order-api.service';
-import { OrderDetail } from './order-detail';
+import {OrderApiService} from '../../../../core/api/order-api.service';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
+import {OrderDetail} from './order-detail';
 
 describe('OrderDetail', () => {
   let component: OrderDetail;
   let fixture: ComponentFixture<OrderDetail>;
+  let businessContext: BusinessContextService;
+  let routeParams: BehaviorSubject<ReturnType<typeof convertToParamMap>>;
 
   const businessId = 'business-1';
   const orderId = 'order-1';
 
   const orderApiMock = {
-    getOrder: vi.fn().mockReturnValue(of(null)),
-  };
-
-  const activatedRouteMock = {
-    snapshot: {
-      queryParamMap: {
-        get: vi.fn().mockReturnValue(businessId),
-      },
-      paramMap: {
-        get: vi.fn().mockReturnValue(orderId),
-      },
-    },
+    getOrder: vi.fn(),
   };
 
   beforeEach(async () => {
+    vi.resetAllMocks();
+    orderApiMock.getOrder.mockReturnValue(of(null));
+    routeParams = new BehaviorSubject(convertToParamMap({orderId}));
+
     await TestBed.configureTestingModule({
       imports: [OrderDetail],
       providers: [
         provideRouter([]),
         {
           provide: ActivatedRoute,
-          useValue: activatedRouteMock,
+          useValue: {paramMap: routeParams.asObservable()},
         },
         {
           provide: OrderApiService,
@@ -42,6 +38,9 @@ describe('OrderDetail', () => {
         },
       ],
     }).compileComponents();
+
+    businessContext = TestBed.inject(BusinessContextService);
+    businessContext.selectBusiness({id: businessId, name: 'Test Business'});
 
     fixture = TestBed.createComponent(OrderDetail);
     component = fixture.componentInstance;
@@ -51,13 +50,14 @@ describe('OrderDetail', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load the order for the business and order id', () => {
+  it('should load the order for the selected business and order id', async () => {
     fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(orderApiMock.getOrder).toHaveBeenCalledWith(businessId, orderId);
   });
 
-  it('should store the loaded order', () => {
+  it('should store the loaded order', async () => {
     const order = {
       id: orderId,
       businessId,
@@ -78,15 +78,40 @@ describe('OrderDetail', () => {
     orderApiMock.getOrder.mockReturnValue(of(order));
 
     fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(component.order()).toEqual(order);
   });
 
-  it('should set an error when loading the order fails', () => {
-    orderApiMock.getOrder.mockReturnValue(throwError(() => new Error('Request failed')));
+  it('should set an error when loading the order fails', async () => {
+    orderApiMock.getOrder.mockReturnValue(
+      throwError(() => new Error('Request failed')),
+    );
 
     fixture.detectChanges();
+    await fixture.whenStable();
 
     expect(component.loadError()).toBe('Could not load order.');
+  });
+
+  it('should reload the order when the business changes', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    businessContext.selectBusiness({id: 'business-2', name: 'Other Business'});
+    await fixture.whenStable();
+
+    expect(orderApiMock.getOrder).toHaveBeenCalledWith('business-2', orderId);
+    expect(orderApiMock.getOrder).toHaveBeenCalledTimes(2);
+  });
+
+  it('should reload when the order id changes', async () => {
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    routeParams.next(convertToParamMap({orderId: 'order-2'}));
+    await fixture.whenStable();
+
+    expect(orderApiMock.getOrder).toHaveBeenCalledWith(businessId, 'order-2');
   });
 });

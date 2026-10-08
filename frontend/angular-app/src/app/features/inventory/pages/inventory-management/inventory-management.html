@@ -1,0 +1,272 @@
+<app-business-context-header/>
+<section class="inventory-management">
+  <header class="page-header">
+    <div>
+      <p class="page-eyebrow">SmartCommerce Admin</p>
+      <h1>Inventory Management</h1>
+      <p class="page-description">
+        Monitor stock levels and manage inventory for this business.
+      </p>
+    </div>
+  </header>
+
+  <section class="inventory-section">
+    <div class="section-header">
+      <div>
+        <h2>Inventory Overview</h2>
+        <p>Current stock information for all products.</p>
+      </div>
+
+      @if (!loading() && !loadError()) {
+        <span class="count-badge">
+          {{ inventoryRows().length }}
+          {{ inventoryRows().length === 1 ? 'product' : 'products' }}
+        </span>
+      }
+    </div>
+
+    @if (loading()) {
+      <div class="state-message">
+        <p>Loading inventory...</p>
+      </div>
+    } @else if (loadError()) {
+      <div class="state-message state-error">
+        <p>{{ loadError() }}</p>
+      </div>
+    } @else if (inventoryRows().length === 0) {
+      <div class="state-message">
+        <h3>No products yet</h3>
+        <p>Add a product before managing inventory.</p>
+      </div>
+    } @else {
+      <div class="inventory-table-wrapper">
+        <table class="inventory-table">
+          <thead>
+          <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Low-stock threshold</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+          </thead>
+
+          <tbody>
+            @for (row of inventoryRows(); track row.product.id) {
+              <tr>
+                <td>
+                  <strong>{{ row.product.name }}</strong>
+
+                  @if (row.product.sku) {
+                    <span class="product-sku">
+                      {{ row.product.sku }}
+                    </span>
+                  }
+                </td>
+
+                @if (row.inventory; as inventory) {
+                  <td>{{ inventory.quantity }}</td>
+
+                  <td>{{ inventory.lowStockThreshold }}</td>
+
+                  <td>
+                    <span
+                      class="status-badge"
+                      [class.status-stock-ok]="!inventory.lowStock"
+                      [class.status-low-stock]="inventory.lowStock"
+                    >
+                      {{ inventory.lowStock ? 'Low Stock' : 'In Stock' }}
+                    </span>
+                  </td>
+
+                  <td>
+                    <button
+                      class="btn btn-secondary"
+                      type="button"
+                      (click)="selectProduct(row.product.id)"
+                    >
+                      Manage
+                    </button>
+                  </td>
+                } @else {
+                  <td>—</td>
+                  <td>—</td>
+
+                  <td>
+                    <span class="status-badge status-not-configured">
+                      Not configured
+                    </span>
+                  </td>
+
+                  <td>
+                    <button
+                      class="btn btn-primary"
+                      type="button"
+                      (click)="selectProduct(row.product.id)"
+                    >
+                      Create Inventory
+                    </button>
+                  </td>
+                }
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+
+  @if (selectedProduct(); as product) {
+    <section class="management-panel">
+      <div class="section-header">
+        <div>
+          <p class="page-eyebrow">Inventory</p>
+          <h2>{{ product.name }}</h2>
+          <p>Manage stock for this product.</p>
+        </div>
+      </div>
+
+      @if (selectedInventory(); as inventory) {
+        <div class="inventory-summary">
+          <div>
+            <span>Current quantity</span>
+            <strong>{{ inventory.quantity }}</strong>
+          </div>
+
+          <div>
+            <span>Low-stock threshold</span>
+            <strong>{{ inventory.lowStockThreshold }}</strong>
+          </div>
+
+          <div>
+            <span>Status</span>
+
+            <span
+              class="status-badge"
+              [class.status-stock-ok]="!inventory.lowStock"
+              [class.status-low-stock]="inventory.lowStock"
+            >
+            {{ inventory.lowStock ? 'Low Stock' : 'In Stock' }}
+          </span>
+          </div>
+        </div>
+
+        <form
+          class="stock-form"
+          [formGroup]="stockAdjustmentForm"
+          (ngSubmit)="requestStockIncrease()"
+        >
+          <div class="form-field">
+            <label for="stockAmount">Amount</label>
+
+            <input
+              id="stockAmount"
+              type="number"
+              min="1"
+              formControlName="amount"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              class="btn btn-success"
+              type="submit"
+              [disabled]="adjustingStock()"
+            >
+              Increase Stock
+            </button>
+
+            <button
+              class="btn btn-danger"
+              type="button"
+              (click)="requestStockDecrease()"
+              [disabled]="adjustingStock()"
+            >
+              Decrease Stock
+            </button>
+          </div>
+        </form>
+      } @else {
+        <form
+          class="inventory-form"
+          [formGroup]="inventoryForm"
+          (ngSubmit)="requestInventoryCreation()"
+        >
+          <div class="form-field">
+            <label for="quantity">Initial quantity</label>
+
+            <input
+              id="quantity"
+              type="number"
+              min="0"
+              formControlName="quantity"
+            />
+          </div>
+
+          <div class="form-field">
+            <label for="lowStockThreshold">Low-stock threshold</label>
+
+            <input
+              id="lowStockThreshold"
+              type="number"
+              min="0"
+              formControlName="lowStockThreshold"
+            />
+          </div>
+
+          <div class="form-actions">
+            <button
+              class="btn btn-primary"
+              type="submit"
+              [disabled]="inventorySaving()"
+            >
+              {{ inventorySaving() ? 'Creating...' : 'Create Inventory' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (inventoryActionError()) {
+        <div class="state-message state-error">
+          <p>{{ inventoryActionError() }}</p>
+        </div>
+      }
+    </section>
+  }
+
+  @if (pendingStockIncrease(); as amount) {
+    <app-confirmation-dialog
+      title="Increase stock?"
+      [message]="'Are you sure you want to increase the stock by ' + amount + '?'"
+      confirmText="Increase"
+      (confirmed)="confirmStockIncrease()"
+      (cancelled)="cancelStockIncrease()"
+    />
+  }
+
+  @if (pendingStockDecrease(); as amount) {
+    <app-confirmation-dialog
+      title="Decrease stock?"
+      [message]="'Are you sure you want to decrease the stock by ' + amount + '?'"
+      confirmText="Decrease"
+      (confirmed)="confirmStockDecrease()"
+      (cancelled)="cancelStockDecrease()"
+    />
+  }
+
+  @if (pendingInventoryCreation(); as inventory) {
+    <app-confirmation-dialog
+      title="Create inventory?"
+      [message]="
+      'Create inventory with quantity ' +
+      inventory.quantity +
+      ' and low-stock threshold ' +
+      inventory.lowStockThreshold +
+      '?'
+    "
+      confirmText="Create"
+      (confirmed)="confirmInventoryCreation()"
+      (cancelled)="cancelInventoryCreation()"
+    />
+  }
+</section>

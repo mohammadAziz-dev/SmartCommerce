@@ -1,5 +1,5 @@
-import { Routes } from '@angular/router';
-import { Dashboard } from './pages/dashboard/dashboard';
+import {Routes} from '@angular/router';
+import {Dashboard} from './pages/dashboard/dashboard';
 
 export const routes: Routes = [
   {
@@ -16,6 +16,13 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/products/pages/product-management/product-management').then(
         (m) => m.ProductManagement,
+      ),
+  },
+  {
+    path: 'inventory',
+    loadComponent: () =>
+      import('./features/inventory/pages/inventory-management/inventory-management').then(
+        (m) => m.InventoryManagement,
       ),
   },
   {

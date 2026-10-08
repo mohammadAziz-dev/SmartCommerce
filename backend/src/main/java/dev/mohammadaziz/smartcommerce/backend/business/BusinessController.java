@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -29,5 +30,10 @@ public class BusinessController {
     @GetMapping("/{id}")
     public BusinessResponse getBusinessById(@PathVariable UUID id) {
         return businessService.getBusinessById(id);
+    }
+
+    @GetMapping
+    public List<BusinessResponse> getBusinesses() {
+        return businessService.getBusinesses();
     }
 }

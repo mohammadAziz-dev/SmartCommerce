@@ -1,3 +1,4 @@
+<app-business-context-header/>
 <section class="order-detail">
   <h1>Order Details</h1>
   <a routerLink="/orders" [queryParams]="{ businessId: businessId() }"> Back to Orders </a>
@@ -21,12 +22,12 @@
     } @else {
       <table>
         <thead>
-          <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Unit Price</th>
-            <th>Subtotal</th>
-          </tr>
+        <tr>
+          <th>Product</th>
+          <th>Quantity</th>
+          <th>Unit Price</th>
+          <th>Subtotal</th>
+        </tr>
         </thead>
 
         <tbody>
