@@ -9,6 +9,7 @@ const product: Product = {
   businessId: "business-1",
   name: "Gaming Mouse",
   description: "Wireless gaming mouse",
+  imageUrl: null,
   sku: "MOUSE-001",
   sellingPrice: 29.99,
   category: "Electronics",
