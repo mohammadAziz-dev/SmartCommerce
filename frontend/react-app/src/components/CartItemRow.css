@@ -58,3 +58,45 @@
     margin-left: auto;
   }
 }
+
+/* Quantity buttons */
+.quantity-button {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background: var(--bg);
+  color: var(--text-h);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.quantity-button:hover {
+  background: var(--accent-bg);
+  border-color: var(--accent);
+}
+
+/* Remove button */
+.remove-button {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #f5c2c7;
+  border-radius: 0.5rem;
+  background: #fff5f5;
+  color: #b42318;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.remove-button:hover {
+  background: #ffe4e6;
+}
+
+/* Keyboard accessibility */
+.quantity-button:focus-visible,
+.remove-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
