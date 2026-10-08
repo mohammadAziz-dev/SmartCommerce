@@ -167,14 +167,13 @@
             <article class="product-card" [class.product-card-inactive]="!product.active">
               <div class="product-image">
                 <span class="image-fallback">No image available</span>
+
                 @if (product.imageUrl) {
                   <img
                     [src]="product.imageUrl"
                     [alt]="product.name"
                     (error)="onProductImageError($event)"
                   />
-                } @else {
-                  <span>No image available</span>
                 }
               </div>
               <div class="product-card-header">
