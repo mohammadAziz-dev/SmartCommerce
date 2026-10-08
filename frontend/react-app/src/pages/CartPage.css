@@ -13,21 +13,11 @@
 }
 
 .cart-summary {
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #ddd;
-}
-
-.cart-total {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.cart-summary {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 0.75rem;
+  margin-top: 2rem;
   padding: 1.5rem;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
@@ -40,6 +30,8 @@
 
 .cart-total {
   color: var(--text-h);
+  font-size: 1.25rem;
+  font-weight: 700;
 }
 
 .cart-checkout-button {

@@ -28,39 +28,6 @@
 }
 
 .quantity-button {
-  min-width: 2rem;
-  height: 2rem;
-  cursor: pointer;
-}
-
-.cart-item-quantity {
-  min-width: 1.5rem;
-  text-align: center;
-}
-
-.remove-button {
-  margin-left: 0.5rem;
-  cursor: pointer;
-}
-
-@media (max-width: 600px) {
-  .cart-item {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .cart-item-actions {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .remove-button {
-    margin-left: auto;
-  }
-}
-
-/* Quantity buttons */
-.quantity-button {
   min-width: 2.25rem;
   height: 2.25rem;
   border: 1px solid var(--border);
@@ -77,8 +44,13 @@
   border-color: var(--accent);
 }
 
-/* Remove button */
+.cart-item-quantity {
+  min-width: 1.5rem;
+  text-align: center;
+}
+
 .remove-button {
+  margin-left: 0.5rem;
   padding: 0.5rem 0.75rem;
   border: 1px solid #f5c2c7;
   border-radius: 0.5rem;
@@ -94,9 +66,24 @@
   background: #ffe4e6;
 }
 
-/* Keyboard accessibility */
 .quantity-button:focus-visible,
 .remove-button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+@media (max-width: 600px) {
+  .cart-item {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cart-item-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .remove-button {
+    margin-left: auto;
+  }
 }
