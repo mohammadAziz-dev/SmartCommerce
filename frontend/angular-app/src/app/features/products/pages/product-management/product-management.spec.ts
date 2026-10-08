@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of, throwError } from 'rxjs';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
+import {of, throwError} from 'rxjs';
 
-import { ProductManagement } from './product-management';
-import { ProductApiService } from '../../../../core/api/product-api.service';
-import { BusinessContextService } from '../../../../core/services/business-context.service';
+import {ProductManagement} from './product-management';
+import {ProductApiService} from '../../../../core/api/product-api.service';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
 
 describe('ProductManagement', () => {
   let component: ProductManagement;
@@ -261,5 +261,16 @@ describe('ProductManagement', () => {
 
     expect(component.productPendingDeactivation()).toBeNull();
     expect(productApiMock.deactivateProduct).toHaveBeenCalledWith('business-123', 'product-123');
+  });
+
+  it('should hide a broken product image and show fallback', () => {
+    const container = document.createElement('div');
+    const image = document.createElement('img');
+    container.appendChild(image);
+
+    component.onProductImageError({target: image} as unknown as Event);
+
+    expect(image.hidden).toBe(true);
+    expect(container.classList.contains('image-unavailable')).toBe(true);
   });
 });
