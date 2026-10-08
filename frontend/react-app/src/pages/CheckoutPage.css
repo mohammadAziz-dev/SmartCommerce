@@ -1,0 +1,99 @@
+.checkout-page {
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 2rem 0;
+}
+
+.checkout-page h1 {
+  margin-bottom: 1.5rem;
+}
+
+.checkout-summary {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  background: var(--bg);
+}
+
+.checkout-summary h2 {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+}
+
+.checkout-summary ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  line-height: 1.9;
+}
+
+.checkout-total {
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  color: var(--text-h);
+  font-size: 1.2rem;
+}
+
+.checkout-page > button {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-page > button:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.checkout-page > button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkout-page > button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Stripe payment form */
+.checkout-page > form {
+  margin-top: 1.5rem;
+}
+
+.checkout-page > form h2 {
+  margin: 0 0 1rem;
+  font-size: 1.4rem;
+}
+
+/* Pay now button */
+.checkout-page > form button {
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 0.5rem;
+  background: var(--accent);
+  color: #ffffff;
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.checkout-page > form button:hover:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.checkout-page > form button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.checkout-page > form button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}

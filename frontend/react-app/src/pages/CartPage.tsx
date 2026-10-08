@@ -27,7 +27,9 @@ export function CartPage() {
       <section className="cart-summary">
         <p>Total items: {totalQuantity}</p>
         <p className="cart-total">Total: €{totalPrice.toFixed(2)}</p>
-        <Link to="/checkout">Proceed to checkout</Link>
+        <Link to="/checkout" className="cart-checkout-button">
+          Proceed to checkout
+        </Link>
       </section>
     </main>
   );

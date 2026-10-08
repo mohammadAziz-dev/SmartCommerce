@@ -25,9 +25,6 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         )}
       </div>
-      <button type="button" onClick={() => addItem(product)}>
-        Add to cart
-      </button>
 
       <span className="product-card__category">{product.category}</span>
 
@@ -38,6 +35,10 @@ export default function ProductCard({ product }: ProductCardProps) {
       )}
 
       <p className="product-card__price">€{product.sellingPrice.toFixed(2)}</p>
+
+      <button type="button" onClick={() => addItem(product)}>
+        Add to cart
+      </button>
     </article>
   );
 }
