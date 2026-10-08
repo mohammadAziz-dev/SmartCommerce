@@ -9,24 +9,32 @@ import {
   viewChild,
 } from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {ActivatedRoute} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
-import {finalize} from 'rxjs';
+import {switchMap, of, catchError, tap, finalize} from 'rxjs';
+import {toObservable} from '@angular/core/rxjs-interop';
 
 import {ProductApiService} from '../../../../core/api/product-api.service';
 import {Product} from '../../../../models/product.model';
 import {ConfirmationDialog} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
+import {BusinessContextHeader} from '../../../../shared/components/business-context-header/business-context-header';
 
 @Component({
   selector: 'app-product-management',
-  imports: [ReactiveFormsModule, ConfirmationDialog],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    ConfirmationDialog,
+    BusinessContextHeader,
+  ],
   templateUrl: './product-management.html',
   styleUrl: './product-management.scss',
 })
 export class ProductManagement implements OnInit {
   private readonly productApi = inject(ProductApiService);
   private readonly destroyRef = inject(DestroyRef);
-  private readonly route = inject(ActivatedRoute);
+  private readonly businessContext = inject(BusinessContextService);
   private readonly productFormSection = viewChild<ElementRef<HTMLElement>>('productFormSection');
 
   readonly products = signal<Product[]>([]);
@@ -34,7 +42,8 @@ export class ProductManagement implements OnInit {
   readonly productLoadError = signal<string | null>(null);
   readonly productActionError = signal<string | null>(null);
   readonly saving = signal(false);
-  readonly businessId = signal<string | null>(null);
+  readonly businessId = this.businessContext.businessId;
+  private readonly businessId$ = toObservable(this.businessId);
   readonly editingProductId = signal<string | null>(null);
   readonly productPendingDeactivation = signal<Product | null>(null);
 
@@ -242,14 +251,35 @@ export class ProductManagement implements OnInit {
   }
 
   ngOnInit(): void {
-    const businessId = this.route.snapshot.queryParamMap.get('businessId');
+    this.businessId$
+      .pipe(
+        tap(() => {
+          this.products.set([]);
+          this.productLoadError.set(null);
+          this.productActionError.set(null);
+          this.productPendingDeactivation.set(null);
+          this.cancelEdit();
+        }),
+        switchMap((businessId) => {
+          if (!businessId) {
+            this.loading.set(false);
+            return of([]);
+          }
 
-    if (!businessId) {
-      this.productLoadError.set('Business ID is missing.');
-      return;
-    }
+          this.loading.set(true);
 
-    this.businessId.set(businessId);
-    this.loadProducts(businessId);
+          return this.productApi.getProducts(businessId).pipe(
+            catchError(() => {
+              this.productLoadError.set('Could not load products.');
+              return of([]);
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((products) => {
+        this.products.set(products);
+        this.loading.set(false);
+      });
   }
 }

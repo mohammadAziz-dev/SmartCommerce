@@ -1,9 +1,9 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
 import {of, throwError} from 'rxjs';
 
 import {ProductManagement} from './product-management';
 import {ProductApiService} from '../../../../core/api/product-api.service';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
 
 describe('ProductManagement', () => {
   let component: ProductManagement;
@@ -18,6 +18,8 @@ describe('ProductManagement', () => {
   };
 
   beforeEach(async () => {
+    productApiMock.getProducts.mockReturnValue(of([]));
+
     await TestBed.configureTestingModule({
       imports: [ProductManagement],
       providers: [
@@ -25,23 +27,19 @@ describe('ProductManagement', () => {
           provide: ProductApiService,
           useValue: productApiMock,
         },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              queryParamMap: {
-                get: vi.fn().mockReturnValue('business-123'),
-              },
-            },
-          },
-        },
       ],
     }).compileComponents();
 
+    const businessContext = TestBed.inject(BusinessContextService);
+    businessContext.selectBusiness({
+      id: 'business-123',
+      name: 'SmartOffice Store',
+    });
+
     fixture = TestBed.createComponent(ProductManagement);
     component = fixture.componentInstance;
-
     fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   afterEach(() => {

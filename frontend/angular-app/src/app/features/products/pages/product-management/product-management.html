@@ -1,243 +1,252 @@
-<section class="product-management">
-  <header class="page-header">
-    <div>
-      <p class="page-eyebrow">SmartCommerce Admin</p>
-      <h1>Product Management</h1>
-      <p class="page-description">
-        Manage products for the selected business.
-      </p>
-    </div>
-  </header>
-
-  <!-- Product form -->
-  <section #productFormSection class="panel product-form-section">
-    <div class="section-header">
+@if (!businessId()) {
+  <section class="empty-state">
+    <h2>Select a business to continue</h2>
+    <p>Choose a business from the Dashboard to manage products.</p>
+    <a routerLink="/dashboard">Go to Dashboard</a>
+  </section>
+} @else {
+  <app-business-context-header/>
+  <section class="product-management">
+    <header class="page-header">
       <div>
-        <h2>{{ isEditing() ? 'Edit Product' : 'Add Product' }}</h2>
-        <p>
-          {{
-            isEditing()
-              ? 'Update the selected product information.'
-              : 'Create a new product for this business.'
-          }}
+        <p class="page-eyebrow">SmartCommerce Admin</p>
+        <h1>Product Management</h1>
+        <p class="page-description">
+          Manage products for the selected business.
         </p>
       </div>
-    </div>
+    </header>
 
-    <form
-      class="product-form"
-      [formGroup]="productForm"
-      (ngSubmit)="submitProduct()"
-    >
-      <div class="form-field">
-        <label for="name">Name</label>
-        <input
-          id="name"
-          type="text"
-          formControlName="name"
-          placeholder="e.g. Wireless Mouse"
-        />
-
-        @if (productForm.controls.name.touched &&
-        productForm.controls.name.hasError('required')) {
-          <p class="field-error">Product name is required.</p>
-        }
-      </div>
-
-      <div class="form-field form-field-wide">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          formControlName="description"
-          placeholder="Short product description"
-          rows="3"
-        ></textarea>
-      </div>
-
-      <div class="form-field">
-        <label for="sku">SKU</label>
-        <input
-          id="sku"
-          type="text"
-          formControlName="sku"
-          placeholder="e.g. WM-001"
-        />
-      </div>
-
-      <div class="form-field">
-        <label for="sellingPrice">Selling price</label>
-        <input
-          id="sellingPrice"
-          type="number"
-          min="0"
-          step="0.01"
-          formControlName="sellingPrice"
-        />
-
-        @if (productForm.controls.sellingPrice.touched &&
-        productForm.controls.sellingPrice.invalid) {
-          <p class="field-error">
-            Selling price must be 0 or greater.
+    <!-- Product form -->
+    <section #productFormSection class="panel product-form-section">
+      <div class="section-header">
+        <div>
+          <h2>{{ isEditing() ? 'Edit Product' : 'Add Product' }}</h2>
+          <p>
+            {{
+              isEditing()
+                ? 'Update the selected product information.'
+                : 'Create a new product for this business.'
+            }}
           </p>
-        }
+        </div>
       </div>
 
-      <div class="form-field">
-        <label for="category">Category</label>
-        <input
-          id="category"
-          type="text"
-          formControlName="category"
-          placeholder="e.g. Accessories"
-        />
-      </div>
+      <form
+        class="product-form"
+        [formGroup]="productForm"
+        (ngSubmit)="submitProduct()"
+      >
+        <div class="form-field">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            type="text"
+            formControlName="name"
+            placeholder="e.g. Wireless Mouse"
+          />
 
-      <div class="form-field checkbox-field">
-        <label>
-          <input type="checkbox" formControlName="active"/>
-          <span>Active product</span>
-        </label>
-      </div>
-
-      <div class="form-actions form-field-wide">
-        <button
-          class="btn btn-primary"
-          type="submit"
-          [disabled]="saving()"
-        >
-          @if (saving()) {
-            Saving...
-          } @else if (isEditing()) {
-            Save Changes
-          } @else {
-            Add Product
+          @if (productForm.controls.name.touched &&
+          productForm.controls.name.hasError('required')) {
+            <p class="field-error">Product name is required.</p>
           }
-        </button>
+        </div>
 
-        @if (isEditing()) {
+        <div class="form-field form-field-wide">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            formControlName="description"
+            placeholder="Short product description"
+            rows="3"
+          ></textarea>
+        </div>
+
+        <div class="form-field">
+          <label for="sku">SKU</label>
+          <input
+            id="sku"
+            type="text"
+            formControlName="sku"
+            placeholder="e.g. WM-001"
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="sellingPrice">Selling price</label>
+          <input
+            id="sellingPrice"
+            type="number"
+            min="0"
+            step="0.01"
+            formControlName="sellingPrice"
+          />
+
+          @if (productForm.controls.sellingPrice.touched &&
+          productForm.controls.sellingPrice.invalid) {
+            <p class="field-error">
+              Selling price must be 0 or greater.
+            </p>
+          }
+        </div>
+
+        <div class="form-field">
+          <label for="category">Category</label>
+          <input
+            id="category"
+            type="text"
+            formControlName="category"
+            placeholder="e.g. Accessories"
+          />
+        </div>
+
+        <div class="form-field checkbox-field">
+          <label>
+            <input type="checkbox" formControlName="active"/>
+            <span>Active product</span>
+          </label>
+        </div>
+
+        <div class="form-actions form-field-wide">
           <button
-            class="btn btn-secondary"
-            type="button"
-            (click)="cancelEdit()"
+            class="btn btn-primary"
+            type="submit"
             [disabled]="saving()"
           >
-            Cancel
+            @if (saving()) {
+              Saving...
+            } @else if (isEditing()) {
+              Save Changes
+            } @else {
+              Add Product
+            }
           </button>
-        }
-      </div>
-    </form>
-  </section>
 
-  @if (productActionError()) {
-    <div class="state-message state-error">
-      <p>{{ productActionError() }}</p>
-    </div>
-  }
+          @if (isEditing()) {
+            <button
+              class="btn btn-secondary"
+              type="button"
+              (click)="cancelEdit()"
+              [disabled]="saving()"
+            >
+              Cancel
+            </button>
+          }
+        </div>
+      </form>
+    </section>
 
-  <!-- Products -->
-  <section class="products-section">
-    <div class="section-header">
-      <div>
-        <h2>Products</h2>
-        <p>View and manage the products for this business.</p>
-      </div>
-
-      @if (!loading() && !productLoadError()) {
-        <span class="count-badge">
-          {{ products().length }}
-          {{ products().length === 1 ? 'product' : 'products' }}
-        </span>
-      }
-    </div>
-
-    @if (loading()) {
-      <div class="state-message">
-        <p>Loading products...</p>
-      </div>
-    } @else if (productLoadError()) {
+    @if (productActionError()) {
       <div class="state-message state-error">
-        <p>{{ productLoadError() }}</p>
-      </div>
-    } @else if (products().length === 0) {
-      <div class="state-message">
-        <h3>No products yet</h3>
-        <p>Add your first product using the form above.</p>
-      </div>
-    } @else {
-      <div class="product-list">
-        @for (product of products(); track product.id) {
-          <article
-            class="product-card"
-            [class.product-card-inactive]="!product.active"
-          >
-            <div class="product-card-header">
-              <div>
-                <h3>{{ product.name }}</h3>
-
-                @if (product.category) {
-                  <p class="product-category">
-                    {{ product.category }}
-                  </p>
-                }
-              </div>
-
-              <span
-                class="status-badge"
-                [class.status-active]="product.active"
-                [class.status-inactive]="!product.active"
-              >
-                {{ product.active ? 'Active' : 'Inactive' }}
-              </span>
-            </div>
-
-            <p class="product-description">
-              {{ product.description || 'No description provided.' }}
-            </p>
-
-            <dl class="product-details">
-              <div>
-                <dt>SKU</dt>
-                <dd>{{ product.sku || '—' }}</dd>
-              </div>
-
-              <div>
-                <dt>Price</dt>
-                <dd>{{ product.sellingPrice }}</dd>
-              </div>
-            </dl>
-
-            <div class="product-actions">
-              <button
-                class="btn btn-secondary"
-                type="button"
-                (click)="editProduct(product)"
-              >
-                Edit
-              </button>
-
-              @if (product.active) {
-                <button
-                  class="btn btn-danger"
-                  type="button"
-                  (click)="requestProductDeactivation(product)"
-                >
-                  Deactivate
-                </button>
-              }
-            </div>
-          </article>
-        }
+        <p>{{ productActionError() }}</p>
       </div>
     }
-  </section>
 
-  @if (productPendingDeactivation(); as product) {
-    <app-confirmation-dialog
-      title="Deactivate product?"
-      [message]="'Are you sure you want to deactivate ' + product.name + '?'"
-      confirmText="Deactivate"
-      (confirmed)="confirmProductDeactivation()"
-      (cancelled)="cancelProductDeactivation()"
-    />
-  }
-</section>
+    <!-- Products -->
+    <section class="products-section">
+      <div class="section-header">
+        <div>
+          <h2>Products</h2>
+          <p>View and manage the products for this business.</p>
+        </div>
+
+        @if (!loading() && !productLoadError()) {
+          <span class="count-badge">
+          {{ products().length }}
+            {{ products().length === 1 ? 'product' : 'products' }}
+        </span>
+        }
+      </div>
+
+      @if (loading()) {
+        <div class="state-message">
+          <p>Loading products...</p>
+        </div>
+      } @else if (productLoadError()) {
+        <div class="state-message state-error">
+          <p>{{ productLoadError() }}</p>
+        </div>
+      } @else if (products().length === 0) {
+        <div class="state-message">
+          <h3>No products yet</h3>
+          <p>Add your first product using the form above.</p>
+        </div>
+      } @else {
+        <div class="product-list">
+          @for (product of products(); track product.id) {
+            <article
+              class="product-card"
+              [class.product-card-inactive]="!product.active"
+            >
+              <div class="product-card-header">
+                <div>
+                  <h3>{{ product.name }}</h3>
+
+                  @if (product.category) {
+                    <p class="product-category">
+                      {{ product.category }}
+                    </p>
+                  }
+                </div>
+
+                <span
+                  class="status-badge"
+                  [class.status-active]="product.active"
+                  [class.status-inactive]="!product.active"
+                >
+                {{ product.active ? 'Active' : 'Inactive' }}
+              </span>
+              </div>
+
+              <p class="product-description">
+                {{ product.description || 'No description provided.' }}
+              </p>
+
+              <dl class="product-details">
+                <div>
+                  <dt>SKU</dt>
+                  <dd>{{ product.sku || '—' }}</dd>
+                </div>
+
+                <div>
+                  <dt>Price</dt>
+                  <dd>{{ product.sellingPrice }}</dd>
+                </div>
+              </dl>
+
+              <div class="product-actions">
+                <button
+                  class="btn btn-secondary"
+                  type="button"
+                  (click)="editProduct(product)"
+                >
+                  Edit
+                </button>
+
+                @if (product.active) {
+                  <button
+                    class="btn btn-danger"
+                    type="button"
+                    (click)="requestProductDeactivation(product)"
+                  >
+                    Deactivate
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    </section>
+
+    @if (productPendingDeactivation(); as product) {
+      <app-confirmation-dialog
+        title="Deactivate product?"
+        [message]="'Are you sure you want to deactivate ' + product.name + '?'"
+        confirmText="Deactivate"
+        (confirmed)="confirmProductDeactivation()"
+        (cancelled)="cancelProductDeactivation()"
+      />
+    }
+  </section>
+}

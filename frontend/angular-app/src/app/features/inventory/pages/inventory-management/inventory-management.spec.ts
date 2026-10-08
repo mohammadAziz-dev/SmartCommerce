@@ -1,6 +1,6 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
-import {ActivatedRoute} from '@angular/router';
 import {of, throwError} from 'rxjs';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
 
 import {InventoryManagement} from './inventory-management';
 import {InventoryApiService} from '../../../../core/api/inventory-api.service';
@@ -11,6 +11,7 @@ import {Product} from '../../../../models/product.model';
 describe('InventoryManagement', () => {
   let fixture: ComponentFixture<InventoryManagement>;
   let component: InventoryManagement;
+  let businessContext: BusinessContextService;
 
   const businessId = 'business-123';
 
@@ -62,22 +63,22 @@ describe('InventoryManagement', () => {
           provide: InventoryApiService,
           useValue: inventoryApiMock,
         },
-        {
-          provide: ActivatedRoute,
-          useValue: {
-            snapshot: {
-              queryParamMap: {
-                get: vi.fn().mockReturnValue(businessId),
-              },
-            },
-          },
-        },
       ],
     }).compileComponents();
+
+    productApiMock.getProducts.mockReturnValue(of([product]));
+    inventoryApiMock.getInventories.mockReturnValue(of([inventory]));
+    inventoryApiMock.subscribeToInventoryChanges.mockImplementation(() => ({
+      close: vi.fn(),
+    }));
+
+    businessContext = TestBed.inject(BusinessContextService);
+    businessContext.selectBusiness({id: businessId, name: 'SmartOffice Store'});
 
     fixture = TestBed.createComponent(InventoryManagement);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    await fixture.whenStable();
   });
 
   it('should load products and inventories', () => {
@@ -86,6 +87,39 @@ describe('InventoryManagement', () => {
 
     expect(component.products()).toEqual([product]);
     expect(component.inventories()).toEqual([inventory]);
+  });
+
+  it('should clear old inventory and close SSE when switching businesses', async () => {
+    const oldConnection = inventoryApiMock.subscribeToInventoryChanges.mock.results[0].value;
+    const secondBusinessId = 'business-456';
+    const secondProduct: Product = {
+      ...product,
+      id: 'product-456',
+      businessId: secondBusinessId,
+      name: 'Keyboard',
+    };
+    const secondInventory: Inventory = {
+      ...inventory,
+      id: 'inventory-456',
+      businessId: secondBusinessId,
+      productId: secondProduct.id,
+    };
+
+    productApiMock.getProducts.mockReturnValue(of([secondProduct]));
+    inventoryApiMock.getInventories.mockReturnValue(of([secondInventory]));
+    component.selectProduct(product.id);
+
+    businessContext.selectBusiness({id: secondBusinessId, name: 'Aziz Electronics'});
+    await fixture.whenStable();
+
+    expect(oldConnection.close).toHaveBeenCalled();
+    expect(inventoryApiMock.subscribeToInventoryChanges).toHaveBeenCalledWith(
+      secondBusinessId,
+      expect.any(Function),
+    );
+    expect(component.selectedProductId()).toBeNull();
+    expect(component.products()).toEqual([secondProduct]);
+    expect(component.inventories()).toEqual([secondInventory]);
   });
 
   it('should combine products with their inventory', () => {

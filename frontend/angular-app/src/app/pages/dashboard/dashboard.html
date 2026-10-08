@@ -1,2 +1,30 @@
 <h1>Dashboard</h1>
-<p>Welcome to SmartCommerce Admin.</p>
+<p>Select a business to manage its products, inventory and orders.</p>
+
+@if (loading()) {
+  <p>Loading businesses...</p>
+} @else if (loadError()) {
+  <p role="alert">{{ loadError() }}</p>
+} @else {
+  <div class="business-selector">
+    <label for="business">Business</label>
+
+    <select
+      id="business"
+      [ngModel]="selectedBusiness()?.id ?? ''"
+      (change)="selectBusiness($any($event.target).value)"
+    >
+      <option value="">Select a business</option>
+
+      @for (business of businesses(); track business.id) {
+        <option [value]="business.id">{{ business.name }}</option>
+      }
+    </select>
+  </div>
+
+  @if (selectedBusiness(); as business) {
+    <p>Currently managing: <strong>{{ business.name }}</strong></p>
+  } @else {
+    <p>No business selected.</p>
+  }
+}

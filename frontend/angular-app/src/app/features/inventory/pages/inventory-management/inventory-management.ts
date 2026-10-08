@@ -1,31 +1,33 @@
 import {Component, computed, DestroyRef, inject, OnInit, signal} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
-import {takeUntilDestroyed} from '@angular/core/rxjs-interop';
+import {takeUntilDestroyed, toObservable} from '@angular/core/rxjs-interop';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {HttpErrorResponse} from '@angular/common/http';
-import {forkJoin, finalize} from 'rxjs';
+import {forkJoin, finalize, of, switchMap, tap, catchError} from 'rxjs';
 
 import {InventoryApiService} from '../../../../core/api/inventory-api.service';
 import {ProductApiService} from '../../../../core/api/product-api.service';
 import {Inventory} from '../../../../models/inventory.model';
 import {Product} from '../../../../models/product.model';
 import {ConfirmationDialog} from '../../../../shared/components/confirmation-dialog/confirmation-dialog';
+import {BusinessContextService} from '../../../../core/services/business-context.service';
+import {BusinessContextHeader} from '../../../../shared/components/business-context-header/business-context-header';
 
 @Component({
   selector: 'app-inventory-management',
-  imports: [ReactiveFormsModule, ConfirmationDialog],
+  imports: [ReactiveFormsModule, ConfirmationDialog, BusinessContextHeader],
   templateUrl: './inventory-management.html',
   styleUrl: './inventory-management.scss',
 })
 export class InventoryManagement implements OnInit {
   private readonly inventoryApi = inject(InventoryApiService);
   private readonly productApi = inject(ProductApiService);
-  private readonly route = inject(ActivatedRoute);
+  private readonly businessContext = inject(BusinessContextService);
   private readonly destroyRef = inject(DestroyRef);
 
   private inventoryEventSource: EventSource | null = null;
 
-  readonly businessId = signal<string | null>(null);
+  readonly businessId = this.businessContext.businessId;
+  private readonly businessId$ = toObservable(this.businessId);
   readonly products = signal<Product[]>([]);
   readonly inventories = signal<Inventory[]>([]);
   readonly loading = signal(false);
@@ -81,6 +83,12 @@ export class InventoryManagement implements OnInit {
       inventory: inventoriesByProductId.get(product.id) ?? null,
     }));
   });
+
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.inventoryEventSource?.close();
+    });
+  }
 
   selectProduct(productId: string): void {
     this.selectedProductId.set(productId);
@@ -260,16 +268,55 @@ export class InventoryManagement implements OnInit {
   }
 
   ngOnInit(): void {
-    const businessId = this.route.snapshot.queryParamMap.get('businessId');
+    this.businessId$
+      .pipe(
+        tap(() => {
+          // Close the previous business's SSE connection.
+          this.inventoryEventSource?.close();
+          this.inventoryEventSource = null;
 
-    if (!businessId) {
-      this.loadError.set('Business ID is missing.');
-      return;
-    }
+          // Remove previous business data and selections.
+          this.products.set([]);
+          this.inventories.set([]);
+          this.selectedProductId.set(null);
+          this.loadError.set(null);
+          this.inventoryActionError.set(null);
+          this.pendingStockIncrease.set(null);
+          this.pendingStockDecrease.set(null);
+          this.pendingInventoryCreation.set(null);
 
-    this.businessId.set(businessId);
-    this.loadInventoryOverview(businessId);
-    this.subscribeToInventoryChanges(businessId);
+          this.inventoryForm.reset({
+            quantity: 0,
+            lowStockThreshold: 5,
+          });
+          this.stockAdjustmentForm.reset({amount: 1});
+        }),
+        switchMap((businessId) => {
+          if (!businessId) {
+            this.loading.set(false);
+            return of({products: [], inventories: []});
+          }
+
+          this.loading.set(true);
+          this.subscribeToInventoryChanges(businessId);
+
+          return forkJoin({
+            products: this.productApi.getProducts(businessId),
+            inventories: this.inventoryApi.getInventories(businessId),
+          }).pipe(
+            catchError(() => {
+              this.loadError.set('Could not load inventory.');
+              return of({products: [], inventories: []});
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(({products, inventories}) => {
+        this.products.set(products);
+        this.inventories.set(inventories);
+        this.loading.set(false);
+      });
   }
 
   private loadInventoryOverview(businessId: string): void {
@@ -299,6 +346,10 @@ export class InventoryManagement implements OnInit {
     this.inventoryEventSource = this.inventoryApi.subscribeToInventoryChanges(
       businessId,
       (event) => {
+        if (this.businessId() !== businessId) {
+          return;
+        }
+
         this.inventories.update((inventories) =>
           inventories.map((inventory) =>
             inventory.productId === event.productId
@@ -312,9 +363,5 @@ export class InventoryManagement implements OnInit {
         );
       },
     );
-
-    this.destroyRef.onDestroy(() => {
-      this.inventoryEventSource?.close();
-    });
   }
 }
