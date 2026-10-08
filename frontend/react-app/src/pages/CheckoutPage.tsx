@@ -6,6 +6,7 @@ import { completeCheckout, createPayment } from "../api/paymentApi";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
 import PaymentForm from "../components/PaymentForm";
+import "./CheckoutPage.css";
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
@@ -48,60 +49,70 @@ export function CheckoutPage() {
 
   if (order) {
     return (
-      <section>
-        <h1>Order confirmed</h1>
-        <p>Your order has been placed successfully.</p>
+      <section className="checkout-page">
+        <div className="checkout-summary">
+          <h1>Order confirmed</h1>
+          <p>Your order has been placed successfully.</p>
 
-        <p>
-          <strong>Order ID:</strong> {order.id}
-        </p>
-        <p>
-          <strong>Status:</strong> {order.status}
-        </p>
+          <p>
+            <strong>Order ID:</strong> {order.id}
+          </p>
+          <p>
+            <strong>Status:</strong> {order.status}
+          </p>
 
-        <h2>Order summary</h2>
-        <ul>
-          {order.items.map((item) => (
-            <li key={item.productId}>
-              {item.productName} × {item.quantity} — €{item.subtotal.toFixed(2)}
-            </li>
-          ))}
-        </ul>
+          <h2>Order summary</h2>
+          <ul>
+            {order.items.map((item) => (
+              <li key={item.productId}>
+                {item.productName} × {item.quantity} — €
+                {item.subtotal.toFixed(2)}
+              </li>
+            ))}
+          </ul>
 
-        <p>
-          <strong>Total: €{order.totalPrice.toFixed(2)}</strong>
-        </p>
-        <Link to="/products">Continue shopping</Link>
+          <p className="checkout-total">
+            <strong>Total: €{order.totalPrice.toFixed(2)}</strong>
+          </p>
+
+          <Link to="/products">Continue shopping</Link>
+        </div>
       </section>
     );
   }
 
   if (items.length === 0) {
     return (
-      <section>
-        <h1>Checkout</h1>
-        <p>Your cart is empty.</p>
-        <Link to="/products">Continue shopping</Link>
+      <section className="checkout-page">
+        <div className="checkout-summary">
+          <h1>Checkout</h1>
+          <p>Your cart is empty.</p>
+          <Link to="/products">Continue shopping</Link>
+        </div>
       </section>
     );
   }
 
   return (
-    <section>
+    <section className="checkout-page">
       <h1>Checkout</h1>
 
-      <h2>Order summary</h2>
-      <ul>
-        {items.map((item) => (
-          <li key={item.product.id}>
-            {item.product.name} × {item.quantity} — €
-            {(item.product.sellingPrice * item.quantity).toFixed(2)}
-          </li>
-        ))}
-      </ul>
-      <p>
-        <strong>Estimated total: €{totalPrice.toFixed(2)}</strong>
-      </p>
+      <div className="checkout-summary">
+        <h2>Order summary</h2>
+
+        <ul>
+          {items.map((item) => (
+            <li key={item.product.id}>
+              {item.product.name} × {item.quantity} — €
+              {(item.product.sellingPrice * item.quantity).toFixed(2)}
+            </li>
+          ))}
+        </ul>
+
+        <p className="checkout-total">
+          <strong>Estimated total: €{totalPrice.toFixed(2)}</strong>
+        </p>
+      </div>
 
       {error && <p role="alert">{error}</p>}
 
