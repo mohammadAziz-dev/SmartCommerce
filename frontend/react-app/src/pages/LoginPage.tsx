@@ -1,6 +1,7 @@
 import { useState, type SyntheticEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
+import "./AuthPage.css";
 
 export function LoginPage() {
   const { login } = useAuth();
@@ -32,38 +33,40 @@ export function LoginPage() {
   }
 
   return (
-    <section>
-      <h1>Log in</h1>
+    <section className="auth-page">
+      <div className="auth-card">
+        <h1>Log in</h1>
 
-      <form
-        onSubmit={(event) => {
-          void handleSubmit(event);
-        }}
-      >
-        <label htmlFor="email">Email</label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
+        <form
+          onSubmit={(event) => {
+            void handleSubmit(event);
+          }}
+        >
+          <label htmlFor="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            required
+          />
 
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
+          <label htmlFor="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            required
+          />
 
-        {error && <p role="alert">{error}</p>}
+          {error && <p role="alert">{error}</p>}
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Logging in..." : "Log in"}
-        </button>
-      </form>
+          <button type="submit" disabled={isSubmitting}>
+            {isSubmitting ? "Logging in..." : "Log in"}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }

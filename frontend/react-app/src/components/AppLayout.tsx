@@ -6,21 +6,22 @@ function AppLayout() {
 
   return (
     <>
-      <header>
-        <nav>
-          <Link to="/">SmartCommerce</Link>
-          {" | "}
-          <Link to="/products">Products</Link>
-          {" | "}
-          <Link to="/cart">Cart</Link>
+      <header className="site-header">
+        <nav className="site-nav" aria-label="Main navigation">
+          <Link to="/" className="site-logo">
+            SmartCommerce
+          </Link>
 
-          {!loading && (
-            <>
-              {" | "}
-              {user ? (
+          <div className="site-nav__links">
+            <Link to="/products">Products</Link>
+            <Link to="/cart">Cart</Link>
+          </div>
+
+          <div className="site-nav__user">
+            {!loading &&
+              (user ? (
                 <>
-                  <span>{user.name}</span>
-                  {" | "}
+                  <span className="site-nav__username">{user.name}</span>
                   <button type="button" onClick={logout}>
                     Log out
                   </button>
@@ -28,12 +29,10 @@ function AppLayout() {
               ) : (
                 <>
                   <Link to="/login">Log in</Link>
-                  {" | "}
                   <Link to="/register">Register</Link>
                 </>
-              )}
-            </>
-          )}
+              ))}
+          </div>
         </nav>
       </header>
 
@@ -41,7 +40,7 @@ function AppLayout() {
         <Outlet />
       </main>
 
-      <footer>
+      <footer className="site-footer">
         <p>© SmartCommerce</p>
       </footer>
     </>
