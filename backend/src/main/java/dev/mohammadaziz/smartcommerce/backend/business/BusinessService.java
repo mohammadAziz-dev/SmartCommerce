@@ -4,6 +4,7 @@ import dev.mohammadaziz.smartcommerce.backend.business.dto.BusinessResponse;
 import dev.mohammadaziz.smartcommerce.backend.business.dto.CreateBusinessRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -33,5 +34,15 @@ public class BusinessService {
                 business.getId(),
                 business.getName()
         );
+    }
+
+    public List<BusinessResponse> getBusinesses() {
+        return businessRepository.findAll()
+                .stream()
+                .map(business -> new BusinessResponse(
+                        business.getId(),
+                        business.getName()
+                ))
+                .toList();
     }
 }
