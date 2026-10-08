@@ -5,15 +5,13 @@
     <a routerLink="/dashboard">Go to Dashboard</a>
   </section>
 } @else {
-  <app-business-context-header/>
+  <app-business-context-header />
   <section class="product-management">
     <header class="page-header">
       <div>
         <p class="page-eyebrow">SmartCommerce Admin</p>
         <h1>Product Management</h1>
-        <p class="page-description">
-          Manage products for the selected business.
-        </p>
+        <p class="page-description">Manage products for the selected business.</p>
       </div>
     </header>
 
@@ -32,22 +30,14 @@
         </div>
       </div>
 
-      <form
-        class="product-form"
-        [formGroup]="productForm"
-        (ngSubmit)="submitProduct()"
-      >
+      <form class="product-form" [formGroup]="productForm" (ngSubmit)="submitProduct()">
         <div class="form-field">
           <label for="name">Name</label>
-          <input
-            id="name"
-            type="text"
-            formControlName="name"
-            placeholder="e.g. Wireless Mouse"
-          />
+          <input id="name" type="text" formControlName="name" placeholder="e.g. Wireless Mouse" />
 
-          @if (productForm.controls.name.touched &&
-          productForm.controls.name.hasError('required')) {
+          @if (
+            productForm.controls.name.touched && productForm.controls.name.hasError('required')
+          ) {
             <p class="field-error">Product name is required.</p>
           }
         </div>
@@ -62,14 +52,19 @@
           ></textarea>
         </div>
 
+        <div class="form-field form-field-wide">
+          <label for="imageUrl">Product image URL (optional)</label>
+          <input
+            id="imageUrl"
+            type="url"
+            formControlName="imageUrl"
+            placeholder="https://example.com/product.jpg"
+          />
+        </div>
+
         <div class="form-field">
           <label for="sku">SKU</label>
-          <input
-            id="sku"
-            type="text"
-            formControlName="sku"
-            placeholder="e.g. WM-001"
-          />
+          <input id="sku" type="text" formControlName="sku" placeholder="e.g. WM-001" />
         </div>
 
         <div class="form-field">
@@ -82,11 +77,10 @@
             formControlName="sellingPrice"
           />
 
-          @if (productForm.controls.sellingPrice.touched &&
-          productForm.controls.sellingPrice.invalid) {
-            <p class="field-error">
-              Selling price must be 0 or greater.
-            </p>
+          @if (
+            productForm.controls.sellingPrice.touched && productForm.controls.sellingPrice.invalid
+          ) {
+            <p class="field-error">Selling price must be 0 or greater.</p>
           }
         </div>
 
@@ -102,17 +96,13 @@
 
         <div class="form-field checkbox-field">
           <label>
-            <input type="checkbox" formControlName="active"/>
+            <input type="checkbox" formControlName="active" />
             <span>Active product</span>
           </label>
         </div>
 
         <div class="form-actions form-field-wide">
-          <button
-            class="btn btn-primary"
-            type="submit"
-            [disabled]="saving()"
-          >
+          <button class="btn btn-primary" type="submit" [disabled]="saving()">
             @if (saving()) {
               Saving...
             } @else if (isEditing()) {
@@ -152,9 +142,9 @@
 
         @if (!loading() && !productLoadError()) {
           <span class="count-badge">
-          {{ products().length }}
+            {{ products().length }}
             {{ products().length === 1 ? 'product' : 'products' }}
-        </span>
+          </span>
         }
       </div>
 
@@ -174,10 +164,19 @@
       } @else {
         <div class="product-list">
           @for (product of products(); track product.id) {
-            <article
-              class="product-card"
-              [class.product-card-inactive]="!product.active"
-            >
+            <article class="product-card" [class.product-card-inactive]="!product.active">
+              <div class="product-image">
+                <span class="image-fallback">No image available</span>
+                @if (product.imageUrl) {
+                  <img
+                    [src]="product.imageUrl"
+                    [alt]="product.name"
+                    (error)="onProductImageError($event)"
+                  />
+                } @else {
+                  <span>No image available</span>
+                }
+              </div>
               <div class="product-card-header">
                 <div>
                   <h3>{{ product.name }}</h3>
@@ -194,8 +193,8 @@
                   [class.status-active]="product.active"
                   [class.status-inactive]="!product.active"
                 >
-                {{ product.active ? 'Active' : 'Inactive' }}
-              </span>
+                  {{ product.active ? 'Active' : 'Inactive' }}
+                </span>
               </div>
 
               <p class="product-description">
@@ -215,11 +214,7 @@
               </dl>
 
               <div class="product-actions">
-                <button
-                  class="btn btn-secondary"
-                  type="button"
-                  (click)="editProduct(product)"
-                >
+                <button class="btn btn-secondary" type="button" (click)="editProduct(product)">
                   Edit
                 </button>
 

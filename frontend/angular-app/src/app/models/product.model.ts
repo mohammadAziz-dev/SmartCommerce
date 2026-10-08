@@ -3,6 +3,7 @@ export interface Product {
   businessId: string;
   name: string;
   description: string | null;
+  imageUrl: string | null;
   sku: string | null;
   sellingPrice: number;
   category: string | null;
@@ -12,6 +13,7 @@ export interface Product {
 export interface ProductRequest {
   name: string;
   description: string | null;
+  imageUrl: string | null;
   sku: string | null;
   sellingPrice: number;
   category: string | null;
