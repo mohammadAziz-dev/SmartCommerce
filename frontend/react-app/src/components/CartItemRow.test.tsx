@@ -1,33 +1,36 @@
-import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
-import { CartProvider } from "../context/CartContext";
-import type { CartItem } from "../models/CartItem";
-import { CartItemRow } from "./CartItemRow";
+import {render, screen} from "@testing-library/react";
+import {MemoryRouter} from "react-router-dom";
+import {describe, expect, it} from "vitest";
+import {CartProvider} from "../context/CartContext";
+import type {CartItem} from "../models/CartItem";
+import {CartItemRow} from "./CartItemRow";
 
 const item: CartItem = {
-  product: {
-    id: "product-1",
-    businessId: "business-1",
-    name: "Gaming Mouse",
-    description: "Wireless gaming mouse",
-    imageUrl: null,
-    sku: "MOUSE-001",
-    sellingPrice: 39.99,
-    category: "Gaming",
-    active: true,
-  },
-  quantity: 2,
+    product: {
+        id: "product-1",
+        businessId: "business-1",
+        name: "Gaming Mouse",
+        description: "Wireless gaming mouse",
+        imageUrl: null,
+        sku: "MOUSE-001",
+        sellingPrice: 39.99,
+        category: "Gaming",
+        active: true,
+    },
+    quantity: 2,
 };
 
 describe("CartItemRow", () => {
-  it("shows the product and quantity", () => {
-    render(
-      <CartProvider>
-        <CartItemRow item={item} />
-      </CartProvider>,
-    );
+    it("shows the product and quantity", () => {
+        render(
+            <MemoryRouter>
+                <CartProvider>
+                    <CartItemRow item={item}/>
+                </CartProvider>
+            </MemoryRouter>,
+        );
 
-    expect(screen.getByText("Gaming Mouse")).toBeInTheDocument();
-    expect(screen.getByText("2")).toBeInTheDocument();
-  });
+        expect(screen.getByText("Gaming Mouse")).toBeInTheDocument();
+        expect(screen.getByText("2")).toBeInTheDocument();
+    });
 });
