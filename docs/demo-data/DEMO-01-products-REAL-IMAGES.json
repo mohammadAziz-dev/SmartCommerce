@@ -1,0 +1,222 @@
+﻿[
+  {
+    "name": "Logitech MX Master 3S Wireless Mouse",
+    "sku": "SC-MOU-001",
+    "category": "Accessories",
+    "description": "Ergonomic wireless mouse with quiet clicks, precision tracking and USB-C charging",
+    "sellingPrice": "99.99",
+    "quantity": 24,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-mou-001.jpg",
+    "active": true
+  },
+  {
+    "name": "Logitech MX Keys S Wireless Keyboard",
+    "sku": "SC-KEY-002",
+    "category": "Accessories",
+    "description": "Low-profile illuminated wireless keyboard for comfortable everyday typing",
+    "sellingPrice": "119.99",
+    "quantity": 18,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-key-002.jpg",
+    "active": true
+  },
+  {
+    "name": "Apple MacBook Air 13-inch M4",
+    "sku": "SC-LAP-003",
+    "category": "Laptops",
+    "description": "Lightweight 13-inch laptop with Apple silicon and long battery life",
+    "sellingPrice": "1199.00",
+    "quantity": 9,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-lap-003.jpg",
+    "active": true
+  },
+  {
+    "name": "Lenovo ThinkPad E14 Gen 6",
+    "sku": "SC-LAP-004",
+    "category": "Laptops",
+    "description": "14-inch business laptop with practical connectivity and durable design",
+    "sellingPrice": "899.00",
+    "quantity": 6,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-lap-004.jpg",
+    "active": true
+  },
+  {
+    "name": "Dell UltraSharp U2723QE 27-inch Monitor",
+    "sku": "SC-MON-005",
+    "category": "Monitors",
+    "description": "27-inch 4K IPS monitor with USB-C hub for professional workspaces",
+    "sellingPrice": "549.00",
+    "quantity": 7,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-mon-005.jpg",
+    "active": true
+  },
+  {
+    "name": "Samsung Odyssey G5 27-inch Monitor",
+    "sku": "SC-MON-006",
+    "category": "Monitors",
+    "description": "27-inch high-refresh gaming monitor for smooth visuals",
+    "sellingPrice": "279.00",
+    "quantity": 12,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-mon-006.jpg",
+    "active": true
+  },
+  {
+    "name": "Apple iPad Air 11-inch M3",
+    "sku": "SC-TAB-007",
+    "category": "Tablets",
+    "description": "Portable 11-inch tablet for notes, media and creative tasks",
+    "sellingPrice": "699.00",
+    "quantity": 8,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-tab-007.jpg",
+    "active": true
+  },
+  {
+    "name": "Samsung Galaxy Tab S10 FE",
+    "sku": "SC-TAB-008",
+    "category": "Tablets",
+    "description": "Versatile Android tablet with stylus support for study and work",
+    "sellingPrice": "529.00",
+    "quantity": 5,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-tab-008.png",
+    "active": true
+  },
+  {
+    "name": "Sony WH-1000XM5 Headphones",
+    "sku": "SC-AUD-009",
+    "category": "Audio",
+    "description": "Wireless over-ear headphones with active noise cancellation",
+    "sellingPrice": "299.00",
+    "quantity": 15,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-aud-009.png",
+    "active": true
+  },
+  {
+    "name": "JBL Flip 6 Bluetooth Speaker",
+    "sku": "SC-AUD-010",
+    "category": "Audio",
+    "description": "Compact portable Bluetooth speaker with water-resistant design",
+    "sellingPrice": "109.00",
+    "quantity": 20,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-aud-010.jpg",
+    "active": true
+  },
+  {
+    "name": "Anker 737 Power Bank 24000mAh",
+    "sku": "SC-PWR-011",
+    "category": "Power & Charging",
+    "description": "High-capacity portable charger with USB-C fast charging",
+    "sellingPrice": "119.00",
+    "quantity": 11,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-pwr-011.jpg",
+    "active": true
+  },
+  {
+    "name": "Anker 735 USB-C Charger 65W",
+    "sku": "SC-PWR-012",
+    "category": "Power & Charging",
+    "description": "Compact multi-port fast charger for laptops and phones",
+    "sellingPrice": "49.99",
+    "quantity": 25,
+    "lowStockThreshold": 6,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-pwr-012.jpg",
+    "active": true
+  },
+  {
+    "name": "Samsung T7 Shield Portable SSD 1TB",
+    "sku": "SC-STO-013",
+    "category": "Storage",
+    "description": "Rugged portable solid-state drive for fast external storage",
+    "sellingPrice": "109.99",
+    "quantity": 14,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-sto-013.jpg",
+    "active": true
+  },
+  {
+    "name": "SanDisk Extreme Portable SSD 2TB",
+    "sku": "SC-STO-014",
+    "category": "Storage",
+    "description": "Compact external SSD for large files and portable backups",
+    "sellingPrice": "179.99",
+    "quantity": 3,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-sto-014.jpg",
+    "active": true
+  },
+  {
+    "name": "Logitech Brio 4K Webcam",
+    "sku": "SC-CAM-015",
+    "category": "Cameras",
+    "description": "4K USB webcam for clear video meetings and streaming",
+    "sellingPrice": "169.00",
+    "quantity": 9,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-cam-015.jpg",
+    "active": true
+  },
+  {
+    "name": "Elgato Stream Deck MK.2",
+    "sku": "SC-ACC-016",
+    "category": "Accessories",
+    "description": "Customizable shortcut controller for streaming and productivity",
+    "sellingPrice": "149.99",
+    "quantity": 4,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-acc-016.jpg",
+    "active": true
+  },
+  {
+    "name": "TP-Link Archer AX55 Wi-Fi 6 Router",
+    "sku": "SC-NET-017",
+    "category": "Networking",
+    "description": "Dual-band Wi-Fi 6 router for reliable home networking",
+    "sellingPrice": "89.99",
+    "quantity": 13,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-net-017.jpg",
+    "active": true
+  },
+  {
+    "name": "UGREEN Revodok USB-C Hub 6-in-1",
+    "sku": "SC-ACC-018",
+    "category": "Accessories",
+    "description": "USB-C multiport adapter with HDMI, USB and card connectivity",
+    "sellingPrice": "39.99",
+    "quantity": 30,
+    "lowStockThreshold": 6,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-acc-018.webp",
+    "active": true
+  },
+  {
+    "name": "Raspberry Pi 5 8GB",
+    "sku": "SC-DEV-019",
+    "category": "Development",
+    "description": "Single-board computer for learning, automation and prototyping",
+    "sellingPrice": "99.99",
+    "quantity": 2,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-dev-019.jpg",
+    "active": true
+  },
+  {
+    "name": "Keychron K2 Wireless Mechanical Keyboard",
+    "sku": "SC-KEY-020",
+    "category": "Accessories",
+    "description": "Compact wireless mechanical keyboard for typing and coding",
+    "sellingPrice": "89.99",
+    "quantity": 16,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://smartcommerce-shop.onrender.com/images/products/sc-key-020.jpg",
+    "active": true
+  }
+]

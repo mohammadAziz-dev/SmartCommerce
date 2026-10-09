@@ -1,0 +1,22 @@
+﻿name,sku,category,description,sellingPrice,quantity,lowStockThreshold,imageUrl,active
+Logitech MX Master 3S Wireless Mouse,SC-MOU-001,Accessories,"Ergonomic wireless mouse with quiet clicks, precision tracking and USB-C charging",99.99,24,5,https://smartcommerce-shop.onrender.com/images/products/sc-mou-001.jpg,True
+Logitech MX Keys S Wireless Keyboard,SC-KEY-002,Accessories,Low-profile illuminated wireless keyboard for comfortable everyday typing,119.99,18,4,https://smartcommerce-shop.onrender.com/images/products/sc-key-002.jpg,True
+Apple MacBook Air 13-inch M4,SC-LAP-003,Laptops,Lightweight 13-inch laptop with Apple silicon and long battery life,1199.00,9,2,https://smartcommerce-shop.onrender.com/images/products/sc-lap-003.jpg,True
+Lenovo ThinkPad E14 Gen 6,SC-LAP-004,Laptops,14-inch business laptop with practical connectivity and durable design,899.00,6,2,https://smartcommerce-shop.onrender.com/images/products/sc-lap-004.jpg,True
+Dell UltraSharp U2723QE 27-inch Monitor,SC-MON-005,Monitors,27-inch 4K IPS monitor with USB-C hub for professional workspaces,549.00,7,2,https://smartcommerce-shop.onrender.com/images/products/sc-mon-005.jpg,True
+Samsung Odyssey G5 27-inch Monitor,SC-MON-006,Monitors,27-inch high-refresh gaming monitor for smooth visuals,279.00,12,3,https://smartcommerce-shop.onrender.com/images/products/sc-mon-006.jpg,True
+Apple iPad Air 11-inch M3,SC-TAB-007,Tablets,"Portable 11-inch tablet for notes, media and creative tasks",699.00,8,2,https://smartcommerce-shop.onrender.com/images/products/sc-tab-007.jpg,True
+Samsung Galaxy Tab S10 FE,SC-TAB-008,Tablets,Versatile Android tablet with stylus support for study and work,529.00,5,2,https://smartcommerce-shop.onrender.com/images/products/sc-tab-008.png,True
+Sony WH-1000XM5 Headphones,SC-AUD-009,Audio,Wireless over-ear headphones with active noise cancellation,299.00,15,4,https://smartcommerce-shop.onrender.com/images/products/sc-aud-009.png,True
+JBL Flip 6 Bluetooth Speaker,SC-AUD-010,Audio,Compact portable Bluetooth speaker with water-resistant design,109.00,20,5,https://smartcommerce-shop.onrender.com/images/products/sc-aud-010.jpg,True
+Anker 737 Power Bank 24000mAh,SC-PWR-011,Power & Charging,High-capacity portable charger with USB-C fast charging,119.00,11,3,https://smartcommerce-shop.onrender.com/images/products/sc-pwr-011.jpg,True
+Anker 735 USB-C Charger 65W,SC-PWR-012,Power & Charging,Compact multi-port fast charger for laptops and phones,49.99,25,6,https://smartcommerce-shop.onrender.com/images/products/sc-pwr-012.jpg,True
+Samsung T7 Shield Portable SSD 1TB,SC-STO-013,Storage,Rugged portable solid-state drive for fast external storage,109.99,14,4,https://smartcommerce-shop.onrender.com/images/products/sc-sto-013.jpg,True
+SanDisk Extreme Portable SSD 2TB,SC-STO-014,Storage,Compact external SSD for large files and portable backups,179.99,3,5,https://smartcommerce-shop.onrender.com/images/products/sc-sto-014.jpg,True
+Logitech Brio 4K Webcam,SC-CAM-015,Cameras,4K USB webcam for clear video meetings and streaming,169.00,9,3,https://smartcommerce-shop.onrender.com/images/products/sc-cam-015.jpg,True
+Elgato Stream Deck MK.2,SC-ACC-016,Accessories,Customizable shortcut controller for streaming and productivity,149.99,4,5,https://smartcommerce-shop.onrender.com/images/products/sc-acc-016.jpg,True
+TP-Link Archer AX55 Wi-Fi 6 Router,SC-NET-017,Networking,Dual-band Wi-Fi 6 router for reliable home networking,89.99,13,3,https://smartcommerce-shop.onrender.com/images/products/sc-net-017.jpg,True
+UGREEN Revodok USB-C Hub 6-in-1,SC-ACC-018,Accessories,"USB-C multiport adapter with HDMI, USB and card connectivity",39.99,30,6,https://smartcommerce-shop.onrender.com/images/products/sc-acc-018.webp,True
+Raspberry Pi 5 8GB,SC-DEV-019,Development,"Single-board computer for learning, automation and prototyping",99.99,2,4,https://smartcommerce-shop.onrender.com/images/products/sc-dev-019.jpg,True
+Keychron K2 Wireless Mechanical Keyboard,SC-KEY-020,Accessories,Compact wireless mechanical keyboard for typing and coding,89.99,16,4,https://smartcommerce-shop.onrender.com/images/products/sc-key-020.jpg,True
+

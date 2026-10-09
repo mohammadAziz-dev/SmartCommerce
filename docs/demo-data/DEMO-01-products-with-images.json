@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Logitech MX Master 3S Wireless Mouse",
+    "sku": "SC-MOU-001",
+    "category": "Accessories",
+    "description": "Ergonomic wireless mouse with quiet clicks, precision tracking and USB-C charging",
+    "sellingPrice": "99.99",
+    "quantity": 24,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Logitech%20MX%20Master%203S%20Wireless%20Mouse",
+    "active": true
+  },
+  {
+    "name": "Logitech MX Keys S Wireless Keyboard",
+    "sku": "SC-KEY-002",
+    "category": "Accessories",
+    "description": "Low-profile illuminated wireless keyboard for comfortable everyday typing",
+    "sellingPrice": "119.99",
+    "quantity": 18,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Logitech%20MX%20Keys%20S%20Wireless%20Keyboard",
+    "active": true
+  },
+  {
+    "name": "Apple MacBook Air 13-inch M4",
+    "sku": "SC-LAP-003",
+    "category": "Laptops",
+    "description": "Lightweight 13-inch laptop with Apple silicon and long battery life",
+    "sellingPrice": "1199.00",
+    "quantity": 9,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Apple%20MacBook%20Air%2013-inch%20M4",
+    "active": true
+  },
+  {
+    "name": "Lenovo ThinkPad E14 Gen 6",
+    "sku": "SC-LAP-004",
+    "category": "Laptops",
+    "description": "14-inch business laptop with practical connectivity and durable design",
+    "sellingPrice": "899.00",
+    "quantity": 6,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Lenovo%20ThinkPad%20E14%20Gen%206",
+    "active": true
+  },
+  {
+    "name": "Dell UltraSharp U2723QE 27-inch Monitor",
+    "sku": "SC-MON-005",
+    "category": "Monitors",
+    "description": "27-inch 4K IPS monitor with USB-C hub for professional workspaces",
+    "sellingPrice": "549.00",
+    "quantity": 7,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Dell%20UltraSharp%20U2723QE%2027-inch%20Monitor",
+    "active": true
+  },
+  {
+    "name": "Samsung Odyssey G5 27-inch Monitor",
+    "sku": "SC-MON-006",
+    "category": "Monitors",
+    "description": "27-inch high-refresh gaming monitor for smooth visuals",
+    "sellingPrice": "279.00",
+    "quantity": 12,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Samsung%20Odyssey%20G5%2027-inch%20Monitor",
+    "active": true
+  },
+  {
+    "name": "Apple iPad Air 11-inch M3",
+    "sku": "SC-TAB-007",
+    "category": "Tablets",
+    "description": "Portable 11-inch tablet for notes, media and creative tasks",
+    "sellingPrice": "699.00",
+    "quantity": 8,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Apple%20iPad%20Air%2011-inch%20M3",
+    "active": true
+  },
+  {
+    "name": "Samsung Galaxy Tab S10 FE",
+    "sku": "SC-TAB-008",
+    "category": "Tablets",
+    "description": "Versatile Android tablet with stylus support for study and work",
+    "sellingPrice": "529.00",
+    "quantity": 5,
+    "lowStockThreshold": 2,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Samsung%20Galaxy%20Tab%20S10%20FE",
+    "active": true
+  },
+  {
+    "name": "Sony WH-1000XM5 Headphones",
+    "sku": "SC-AUD-009",
+    "category": "Audio",
+    "description": "Wireless over-ear headphones with active noise cancellation",
+    "sellingPrice": "299.00",
+    "quantity": 15,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Sony%20WH-1000XM5%20Headphones",
+    "active": true
+  },
+  {
+    "name": "JBL Flip 6 Bluetooth Speaker",
+    "sku": "SC-AUD-010",
+    "category": "Audio",
+    "description": "Compact portable Bluetooth speaker with water-resistant design",
+    "sellingPrice": "109.00",
+    "quantity": 20,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=JBL%20Flip%206%20Bluetooth%20Speaker",
+    "active": true
+  },
+  {
+    "name": "Anker 737 Power Bank 24000mAh",
+    "sku": "SC-PWR-011",
+    "category": "Power & Charging",
+    "description": "High-capacity portable charger with USB-C fast charging",
+    "sellingPrice": "119.00",
+    "quantity": 11,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Anker%20737%20Power%20Bank%2024000mAh",
+    "active": true
+  },
+  {
+    "name": "Anker 735 USB-C Charger 65W",
+    "sku": "SC-PWR-012",
+    "category": "Power & Charging",
+    "description": "Compact multi-port fast charger for laptops and phones",
+    "sellingPrice": "49.99",
+    "quantity": 25,
+    "lowStockThreshold": 6,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Anker%20735%20USB-C%20Charger%2065W",
+    "active": true
+  },
+  {
+    "name": "Samsung T7 Shield Portable SSD 1TB",
+    "sku": "SC-STO-013",
+    "category": "Storage",
+    "description": "Rugged portable solid-state drive for fast external storage",
+    "sellingPrice": "109.99",
+    "quantity": 14,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Samsung%20T7%20Shield%20Portable%20SSD%201TB",
+    "active": true
+  },
+  {
+    "name": "SanDisk Extreme Portable SSD 2TB",
+    "sku": "SC-STO-014",
+    "category": "Storage",
+    "description": "Compact external SSD for large files and portable backups",
+    "sellingPrice": "179.99",
+    "quantity": 3,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=SanDisk%20Extreme%20Portable%20SSD%202TB",
+    "active": true
+  },
+  {
+    "name": "Logitech Brio 4K Webcam",
+    "sku": "SC-CAM-015",
+    "category": "Cameras",
+    "description": "4K USB webcam for clear video meetings and streaming",
+    "sellingPrice": "169.00",
+    "quantity": 9,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Logitech%20Brio%204K%20Webcam",
+    "active": true
+  },
+  {
+    "name": "Elgato Stream Deck MK.2",
+    "sku": "SC-ACC-016",
+    "category": "Accessories",
+    "description": "Customizable shortcut controller for streaming and productivity",
+    "sellingPrice": "149.99",
+    "quantity": 4,
+    "lowStockThreshold": 5,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Elgato%20Stream%20Deck%20MK.2",
+    "active": true
+  },
+  {
+    "name": "TP-Link Archer AX55 Wi-Fi 6 Router",
+    "sku": "SC-NET-017",
+    "category": "Networking",
+    "description": "Dual-band Wi-Fi 6 router for reliable home networking",
+    "sellingPrice": "89.99",
+    "quantity": 13,
+    "lowStockThreshold": 3,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=TP-Link%20Archer%20AX55%20Wi-Fi%206%20Router",
+    "active": true
+  },
+  {
+    "name": "UGREEN Revodok USB-C Hub 6-in-1",
+    "sku": "SC-ACC-018",
+    "category": "Accessories",
+    "description": "USB-C multiport adapter with HDMI, USB and card connectivity",
+    "sellingPrice": "39.99",
+    "quantity": 30,
+    "lowStockThreshold": 6,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=UGREEN%20Revodok%20USB-C%20Hub%206-in-1",
+    "active": true
+  },
+  {
+    "name": "Raspberry Pi 5 8GB",
+    "sku": "SC-DEV-019",
+    "category": "Development",
+    "description": "Single-board computer for learning, automation and prototyping",
+    "sellingPrice": "99.99",
+    "quantity": 2,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Raspberry%20Pi%205%208GB",
+    "active": true
+  },
+  {
+    "name": "Keychron K2 Wireless Mechanical Keyboard",
+    "sku": "SC-KEY-020",
+    "category": "Accessories",
+    "description": "Compact wireless mechanical keyboard for typing and coding",
+    "sellingPrice": "89.99",
+    "quantity": 16,
+    "lowStockThreshold": 4,
+    "imageUrl": "https://placehold.co/800x600/e9eef5/25344a/png?text=Keychron%20K2%20Wireless%20Mechanical%20Keyboard",
+    "active": true
+  }
+]
