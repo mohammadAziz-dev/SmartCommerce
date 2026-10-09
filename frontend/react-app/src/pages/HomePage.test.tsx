@@ -12,7 +12,7 @@ describe("HomePage", () => {
         );
 
         expect(
-            screen.getByRole("heading", {name: "Welcome to SmartCommerce"}),
+            screen.getByRole("heading", {name: "Explore our stores"}),
         ).toBeInTheDocument();
     });
 
@@ -25,7 +25,7 @@ describe("HomePage", () => {
         );
 
         expect(
-            screen.getByRole("link", {name: /SmartCommerce Demo/i}),
+            screen.getByRole("link", {name: /SmartOffice Store/i}),
         ).toHaveAttribute("href", "/shop/smartcommerce-demo/products");
 
         expect(
