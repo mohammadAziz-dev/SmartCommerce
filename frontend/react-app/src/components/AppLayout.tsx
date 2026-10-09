@@ -1,50 +1,64 @@
-import { Link, Outlet } from "react-router-dom";
-import { useAuth } from "../hooks/useAuth";
+import {Link, Outlet, useLocation} from "react-router-dom";
+import {useAuth} from "../hooks/useAuth";
 
 function AppLayout() {
-  const { user, loading, logout } = useAuth();
+    const {user, loading, logout} = useAuth();
+    const {pathname} = useLocation();
 
-  return (
-    <>
-      <header className="site-header">
-        <nav className="site-nav" aria-label="Main navigation">
-          <Link to="/" className="site-logo">
-            SmartCommerce
-          </Link>
+    const businessSlug = pathname.match(
+        /^\/shop\/([^/]+)(?:\/|$)/,
+    )?.[1];
 
-          <div className="site-nav__links">
-            <Link to="/products">Products</Link>
-            <Link to="/cart">Cart</Link>
-          </div>
+    const shopBase = businessSlug
+        ? `/shop/${businessSlug}`
+        : "";
 
-          <div className="site-nav__user">
-            {!loading &&
-              (user ? (
-                <>
-                  <span className="site-nav__username">{user.name}</span>
-                  <button type="button" onClick={logout}>
-                    Log out
-                  </button>
-                </>
-              ) : (
-                <>
-                  <Link to="/login">Log in</Link>
-                  <Link to="/register">Register</Link>
-                </>
-              ))}
-          </div>
-        </nav>
-      </header>
+    const productsPath = `${shopBase}/products`;
+    const cartPath = `${shopBase}/cart`;
 
-      <main>
-        <Outlet />
-      </main>
+    return (
+        <>
+            <header className="site-header">
+                <nav className="site-nav" aria-label="Main navigation">
+                    <Link to="/" className="site-logo">
+                        SmartCommerce
+                    </Link>
 
-      <footer className="site-footer">
-        <p>© SmartCommerce</p>
-      </footer>
-    </>
-  );
+                    <div className="site-nav__links">
+                        <Link to={productsPath}>Products</Link>
+                        <Link to={cartPath}>Cart</Link>
+                    </div>
+
+                    <div className="site-nav__user">
+                        {!loading &&
+                            (user ? (
+                                <>
+                  <span className="site-nav__username">
+                    {user.name}
+                  </span>
+                                    <button type="button" onClick={logout}>
+                                        Log out
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/login">Log in</Link>
+                                    <Link to="/register">Register</Link>
+                                </>
+                            ))}
+                    </div>
+                </nav>
+            </header>
+
+            <main>
+                <Outlet/>
+            </main>
+
+            <footer className="site-footer">
+                <p>© SmartCommerce</p>
+            </footer>
+        </>
+    );
 }
 
 export default AppLayout;
