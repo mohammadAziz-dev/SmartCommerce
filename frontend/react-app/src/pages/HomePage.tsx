@@ -32,10 +32,9 @@ function HomePage() {
         <span className="marketplace__eyebrow">
           YOUR SHOPPING DESTINATION
         </span>
-                <h1>Explore our stores</h1>
+                <h1>Explore Our Stores</h1>
                 <p>
-                    Discover curated collections across technology, gaming,
-                    and home living. Find your next favorite product.
+                    Discover great products from our technology, gaming and home stores.
                 </p>
             </section>
 

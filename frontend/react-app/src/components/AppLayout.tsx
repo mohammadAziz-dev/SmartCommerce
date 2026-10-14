@@ -13,7 +13,6 @@ function AppLayout() {
         ? `/shop/${businessSlug}`
         : "";
 
-    const productsPath = `${shopBase}/products`;
     const cartPath = `${shopBase}/cart`;
 
     return (
@@ -25,7 +24,7 @@ function AppLayout() {
                     </Link>
 
                     <div className="site-nav__links">
-                        <Link to={productsPath}>Products</Link>
+                        <Link to="/">All Stores</Link>
                         <Link to={cartPath}>Cart</Link>
                     </div>
 

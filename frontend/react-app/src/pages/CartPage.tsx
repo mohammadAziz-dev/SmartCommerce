@@ -3,10 +3,19 @@ import {CartItemRow} from "../components/CartItemRow";
 import {useCart} from "../hooks/useCart";
 import "./CartPage.css";
 
+const businessNames: Record<string, string> = {
+    "smartcommerce-demo": "SmartOffice Store",
+    "gaming-store": "Gaming Store",
+    "home-living-store": "Home Living Store",
+};
+
 export function CartPage() {
     const {items, totalQuantity, totalPrice} = useCart();
 
     const {businessSlug} = useParams<{ businessSlug: string }>();
+    const cartTitle = businessSlug
+        ? `Your Cart — ${businessNames[businessSlug] ?? "Store"}`
+        : "Shopping Cart";
 
     const checkoutPath = businessSlug
         ? `/shop/${businessSlug}/checkout`
@@ -15,7 +24,7 @@ export function CartPage() {
     if (items.length === 0) {
         return (
             <main>
-                <h1>Shopping Cart</h1>
+                <h1>{cartTitle}</h1>
                 <p>Your cart is empty.</p>
             </main>
         );
@@ -23,7 +32,7 @@ export function CartPage() {
 
     return (
         <main className="cart-page">
-            <h1>Shopping Cart</h1>
+            <h1>{cartTitle}</h1>
             <div className="cart-items">
                 {items.map((item) => (
                     <CartItemRow key={item.product.id} item={item}/>
