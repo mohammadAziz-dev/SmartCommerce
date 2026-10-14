@@ -39,6 +39,9 @@ describe("CartPage", () => {
         );
 
         expect(screen.getByText("Your cart is empty.")).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", {name: /Continue Shopping/i}),
+        ).toHaveAttribute("href", "/");
     });
 
     it("shows cart items and totals", () => {
@@ -56,6 +59,9 @@ describe("CartPage", () => {
         expect(screen.getByText("Gaming Mouse")).toBeInTheDocument();
         expect(screen.getByText("Total items: 1")).toBeInTheDocument();
         expect(screen.getByText("Total: €39.99")).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", {name: /Continue Shopping/i}),
+        ).toHaveAttribute("href", "/");
     });
 
     it.each([
@@ -83,6 +89,9 @@ describe("CartPage", () => {
         ).toBeInTheDocument();
 
         expect(screen.getByText("Your cart is empty.")).toBeInTheDocument();
+        expect(
+            screen.getByRole("link", {name: /Continue Shopping/i}),
+        ).toHaveAttribute("href", `/shop/${slug}/products`);
     });
 
     it("keeps the legacy cart heading", () => {

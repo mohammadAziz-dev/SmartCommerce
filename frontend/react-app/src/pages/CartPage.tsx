@@ -20,12 +20,16 @@ export function CartPage() {
     const checkoutPath = businessSlug
         ? `/shop/${businessSlug}/checkout`
         : "/checkout";
+    const shoppingPath = businessSlug
+        ? `/shop/${businessSlug}/products`
+        : "/";
 
     if (items.length === 0) {
         return (
             <main>
                 <h1>{cartTitle}</h1>
                 <p>Your cart is empty.</p>
+                <Link to={shoppingPath}>← Continue Shopping</Link>
             </main>
         );
     }
@@ -33,6 +37,7 @@ export function CartPage() {
     return (
         <main className="cart-page">
             <h1>{cartTitle}</h1>
+            <Link to={shoppingPath}>← Continue Shopping</Link>
             <div className="cart-items">
                 {items.map((item) => (
                     <CartItemRow key={item.product.id} item={item}/>
