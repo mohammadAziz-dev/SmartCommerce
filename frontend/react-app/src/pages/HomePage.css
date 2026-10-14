@@ -2,12 +2,12 @@
 .marketplace {
     width: min(1200px, 100%);
     margin: 0 auto;
-    padding: 3.5rem 1.5rem 5rem;
+    padding: 0 1.5rem 1rem;
 }
 
 .marketplace__intro {
     max-width: 760px;
-    margin: 0 auto 4rem;
+    margin: 0 auto 1rem;
     text-align: center;
 }
 
@@ -21,9 +21,9 @@
 }
 
 .marketplace__intro h1 {
-    margin: 0 0 1rem;
+    margin: 0 0 0.75rem;
     color: #0f172a;
-    font-size: clamp(2.4rem, 5vw, 3.7rem);
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
     font-weight: 800;
     letter-spacing: -0.045em;
     line-height: 1.15;
@@ -36,7 +36,7 @@
 }
 
 .marketplace__section-heading {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
 }
 
 .marketplace__section-heading h2 {
@@ -85,7 +85,7 @@
 
 .marketplace__image-wrap {
     width: 100%;
-    aspect-ratio: 16 / 10;
+    aspect-ratio: 16 / 8;
     overflow: hidden;
     background: #f1f5f9;
 }
@@ -107,7 +107,7 @@
     flex: 1;
     flex-direction: column;
     align-items: flex-start;
-    padding: 1.5rem;
+    padding: 1rem;
 }
 
 .marketplace__card-content h3 {
@@ -143,7 +143,7 @@
     background: #2563eb;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 760px) {
     .marketplace__grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }

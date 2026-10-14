@@ -12,7 +12,7 @@ describe("HomePage", () => {
         );
 
         expect(
-            screen.getByRole("heading", {name: "Explore our stores"}),
+            screen.getByRole("heading", {name: "Explore Our Stores"}),
         ).toBeInTheDocument();
     });
 
