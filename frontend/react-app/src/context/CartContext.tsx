@@ -20,7 +20,10 @@ export function CartProvider({children}: CartProviderProps) {
 
     const [carts, setCarts] = useState<Record<string, CartItem[]>>({});
 
-    const items = carts[cartKey] ?? [];
+    const items = useMemo(
+        () => carts[cartKey] ?? [],
+        [carts, cartKey],
+    );
 
     const addItem = useCallback(
         (product: Product) => {

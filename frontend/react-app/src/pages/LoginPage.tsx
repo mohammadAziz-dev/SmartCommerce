@@ -1,6 +1,7 @@
 import {useState, type SyntheticEvent} from "react";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../hooks/useAuth";
+import {PasswordInput} from "../components/PasswordInput";
 import "./AuthPage.css";
 
 export function LoginPage() {
@@ -51,13 +52,12 @@ export function LoginPage() {
                         required
                     />
 
-                    <label htmlFor="password">Password</label>
-                    <input
+                    <PasswordInput
                         id="password"
-                        type="password"
+                        label="Password"
                         value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        required
+                        onChange={setPassword}
+                        autoComplete="current-password"
                     />
 
                     {error && <p role="alert">{error}</p>}
