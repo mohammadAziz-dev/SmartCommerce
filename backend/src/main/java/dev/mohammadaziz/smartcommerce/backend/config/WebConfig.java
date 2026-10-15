@@ -14,7 +14,8 @@ public class WebConfig implements WebMvcConfigurer {
                         "http://localhost:5173",
                         "http://localhost:4200",
                         "https://smartcommerce-shop.onrender.com",
-                        "https://smartcommerce-admin-c1k4.onrender.com"
+                        "https://smartcommerce-admin-c1k4.onrender.com",
+                        "https://shop.mohammadaziz.dev"
                 )
                 .allowCredentials(true)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS");
