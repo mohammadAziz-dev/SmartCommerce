@@ -44,14 +44,16 @@ to a shared **Spring Boot REST API** and **PostgreSQL** database.
 ## Architecture
 
 ```mermaid
-flowchart TD
-    C[Customer] --> R[React Customer Shop]
-    A[Store Administrator] --> G[Angular Admin]
-    R -->|REST API / SSE| B[Spring Boot Backend]
-    G -->|REST API| B
-    B --> P[(PostgreSQL - Neon)]
-    B --> S[Stripe - Test Mode]
-    B --> E[Resend Email API]
+flowchart TB
+    C["Customer"] --> R["React Customer Shop"]
+    A["Store Administrator"] --> G["Angular Admin"]
+
+    R -->|"REST API / SSE"| B["Spring Boot Backend"]
+    G -->|"REST API"| B
+
+    B --> P[("PostgreSQL - Neon")]
+    B --> S["Stripe - Test Mode"]
+    B --> E["Resend Email API"]
 ```
 
 Both frontends are deployed on Render and communicate with the shared backend. The backend manages business data,
