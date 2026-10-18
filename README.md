@@ -8,8 +8,42 @@ to a shared **Spring Boot REST API** and **PostgreSQL** database.
 
 - **Customer Shop (React):** https://smartcommerce-shop.onrender.com
 - **Admin Dashboard (Angular):** https://smartcommerce-admin-c1k4.onrender.com
-- **Backend API (Spring Boot):** https://smartcommerce-v233.onrender.com
-- **Demo video:** _Link coming soon (video recorded; not yet published)._
+
+## Demo Video
+
+[▶ Watch SmartCommerce Demo on YouTube](https://youtu.be/4c3-4E0s9kQ)
+
+## Screenshots
+
+### React Customer Shop
+
+**Multi-Store Landing Page**
+
+![SmartCommerce Stores](docs/screenshots/SmartCommerce_01_Stores.png)
+
+**Product Catalogue**
+
+![SmartCommerce Products](docs/screenshots/SmartCommerce_02_Products.png)
+
+**Stripe Checkout**
+
+![SmartCommerce Checkout](docs/screenshots/SmartCommerce_06.01_Checkout.png)
+
+![SmartCommerce Payment](docs/screenshots/SmartCommerce_06.02_Checkout.png)
+
+### Angular Admin Dashboard
+
+**Admin Dashboard**
+
+![SmartCommerce Admin](docs/screenshots/SmarcCommerce_03_Admin.png)
+
+**Product Creation**
+
+![SmartCommerce Product Creation](docs/screenshots/SmartCommerce_04_Product-add.png)
+
+**Inventory Management**
+
+![SmartCommerce Inventory](docs/screenshots/SmartCommerce_05_Inventory_manage.png)
 
 > The applications use free-tier hosting. The first request after inactivity may take longer to respond.
 >
