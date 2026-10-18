@@ -35,7 +35,7 @@ to a shared **Spring Boot REST API** and **PostgreSQL** database.
 
 **Admin Dashboard**
 
-![SmartCommerce Admin](docs/screenshots/SmarcCommerce_03_Admin.png)
+![SmartCommerce Admin](docs/screenshots/SmartCommerce_03.02_Admin_Dashboard.png)
 
 **Product Creation**
 
