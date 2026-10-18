@@ -49,8 +49,9 @@ flowchart TB
     C["Customer"] --> R["React Shop"]
     A["Administrator"] --> G["Angular Admin"]
 
-    R -->|"REST / SSE"| B["Spring Boot API"]
+    R -->|"REST"| B["Spring Boot API"]
     G -->|"REST"| B
+    B -->|"SSE"| G
 
     B --> P[("Neon DB")]
     B --> S["Stripe"]
